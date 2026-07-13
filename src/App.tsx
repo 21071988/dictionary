@@ -17,10 +17,12 @@ import {
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SchoolIcon from '@mui/icons-material/School';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 import { useWords } from './hooks/useWords';
 import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
 import { TrainingView } from './components/TrainingView';
+import { ExportImportView } from './components/ExportImportView';
 import type { ViewKey } from './types';
 import strings from './strings.json';
 
@@ -28,6 +30,7 @@ const NAV_ITEMS: { key: ViewKey; label: string; icon: React.ReactElement }[] = [
   { key: 'dictionary', label: strings.nav.dictionary, icon: <MenuBookIcon /> },
   { key: 'add', label: strings.nav.add, icon: <AddCircleIcon /> },
   { key: 'training', label: strings.nav.training, icon: <SchoolIcon /> },
+  { key: 'exportImport', label: strings.nav.exportImport, icon: <ImportExportIcon /> },
 ];
 
 const DRAWER_WIDTH = 220;
@@ -44,16 +47,17 @@ export default function App() {
           words={words}
           onUpdate={updateWord}
           onDelete={deleteWord}
-          onImport={importWords}
+          onNavigate={setView}
         />
       )}
       {view === 'add' && <AddCardView onAdd={addWord} />}
       {view === 'training' && <TrainingView words={words} />}
+      {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
     </>
   );
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100dvh' }}>
       {isDesktop && (
         <Drawer
           variant="permanent"

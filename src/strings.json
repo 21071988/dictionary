@@ -5,7 +5,8 @@
   "nav": {
     "dictionary": "Dictionary",
     "add": "Add",
-    "training": "Training"
+    "training": "Training",
+    "exportImport": "Export / Import"
   },
   "dictionary": {
     "searchPlaceholder": "Search word or translation",
@@ -15,10 +16,15 @@
     "delete": "Delete",
     "export": "Export",
     "import": "Import",
+    "addFirstWord": "Add first word",
     "importSuccess": "Import complete",
     "addedLabel": "Added",
     "updatedLabel": "Updated",
     "importError": "Could not import file. Please check the format."
+  },
+  "exportImport": {
+    "exportDescription": "Download all your cards as a JSON file.",
+    "importDescription": "Load cards from a previously exported JSON file."
   },
   "form": {
     "word": "Word",

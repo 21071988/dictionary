@@ -1,17 +1,15 @@
 import { useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Box,
+  Button,
   IconButton,
   InputAdornment,
   List,
   ListItemButton,
   ListItemText,
   ListSubheader,
-  Snackbar,
   Stack,
   TextField,
-  Tooltip,
   Typography,
   Paper,
 } from '@mui/material';
@@ -20,18 +18,17 @@ import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import type { WordCard, WordCardInput } from '../types';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import type { ViewKey, WordCard, WordCardInput } from '../types';
 import { EditWordDialog } from './EditWordDialog';
-import { downloadWordsAsJson, parseImportedWords } from '../importExport';
 import strings from '../strings.json';
 
 interface DictionaryViewProps {
   words: WordCard[];
   onUpdate: (id: string, input: WordCardInput) => void;
   onDelete: (id: string) => void;
-  onImport: (incoming: WordCard[]) => { added: number; updated: number };
+  onNavigate: (view: ViewKey) => void;
 }
 
 function getLetter(word: string): string {
@@ -39,15 +36,11 @@ function getLetter(word: string): string {
   return first ? first.toLocaleUpperCase() : '#';
 }
 
-export function DictionaryView({ words, onUpdate, onDelete, onImport }: DictionaryViewProps) {
+export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: DictionaryViewProps) {
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<WordCard | null>(null);
-  const [importFeedback, setImportFeedback] = useState<
-    { severity: 'success' | 'error'; message: string } | null
-  >(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const letterRefs = useRef<Map<string, HTMLLIElement>>(new Map());
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLocaleLowerCase();
@@ -80,31 +73,6 @@ export function DictionaryView({ words, onUpdate, onDelete, onImport }: Dictiona
     }
   };
 
-  const handleExport = () => {
-    downloadWordsAsJson(words);
-  };
-
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const incoming = parseImportedWords(text);
-      const { added, updated } = onImport(incoming);
-      setImportFeedback({
-        severity: 'success',
-        message: `${strings.dictionary.importSuccess}: ${strings.dictionary.addedLabel} ${added}, ${strings.dictionary.updatedLabel} ${updated}`,
-      });
-    } catch {
-      setImportFeedback({ severity: 'error', message: strings.dictionary.importError });
-    }
-  };
-
   const toolbar = (
     <Box sx={{ p: 1.5, pb: 1 }}>
       <Stack direction="row" spacing={1}>
@@ -131,45 +99,8 @@ export function DictionaryView({ words, onUpdate, onDelete, onImport }: Dictiona
             },
           }}
         />
-        <Tooltip title={strings.dictionary.export}>
-          <IconButton onClick={handleExport} aria-label={strings.dictionary.export}>
-            <FileDownloadIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title={strings.dictionary.import}>
-          <IconButton onClick={handleImportClick} aria-label={strings.dictionary.import}>
-            <FileUploadIcon />
-          </IconButton>
-        </Tooltip>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/json"
-          hidden
-          onChange={handleFileChange}
-        />
       </Stack>
     </Box>
-  );
-
-  const feedbackSnackbar = (
-    <Snackbar
-      open={importFeedback !== null}
-      autoHideDuration={3000}
-      onClose={() => setImportFeedback(null)}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      sx={{ bottom: { xs: 72, md: 24 } }}
-    >
-      {importFeedback ? (
-        <Alert
-          severity={importFeedback.severity}
-          variant="filled"
-          onClose={() => setImportFeedback(null)}
-        >
-          {importFeedback.message}
-        </Alert>
-      ) : undefined}
-    </Snackbar>
   );
 
   if (words.length === 0) {
@@ -181,8 +112,23 @@ export function DictionaryView({ words, onUpdate, onDelete, onImport }: Dictiona
           <Typography color="text.secondary" align="center">
             {strings.dictionary.empty}
           </Typography>
+          <Stack direction="row" spacing={1.5}>
+            <Button
+              variant="contained"
+              startIcon={<AddCircleIcon />}
+              onClick={() => onNavigate('add')}
+            >
+              {strings.dictionary.addFirstWord}
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowDownwardIcon />}
+              onClick={() => onNavigate('exportImport')}
+            >
+              {strings.dictionary.import}
+            </Button>
+          </Stack>
         </Stack>
-        {feedbackSnackbar}
       </Box>
     );
   }
@@ -325,7 +271,6 @@ export function DictionaryView({ words, onUpdate, onDelete, onImport }: Dictiona
           setEditing(null);
         }}
       />
-      {feedbackSnackbar}
     </Box>
   );
 }

@@ -8,4 +8,4 @@ export interface WordCard {
 
 export type WordCardInput = Pick<WordCard, 'word' | 'translation' | 'transcription'>;
 
-export type ViewKey = 'dictionary' | 'add' | 'training';
+export type ViewKey = 'dictionary' | 'add' | 'training' | 'exportImport';
