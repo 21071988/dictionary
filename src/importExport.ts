@@ -17,11 +17,10 @@ function normalizeCard(value: unknown): WordCard | null {
   if (typeof value !== 'object' || value === null) return null;
   const candidate = value as Record<string, unknown>;
   if (typeof candidate.word !== 'string' || !candidate.word.trim()) return null;
-  if (typeof candidate.translation !== 'string' || !candidate.translation.trim()) return null;
   return {
     id: typeof candidate.id === 'string' && candidate.id ? candidate.id : uuid(),
     word: candidate.word.trim(),
-    translation: candidate.translation.trim(),
+    translation: typeof candidate.translation === 'string' ? candidate.translation.trim() : '',
     transcription: typeof candidate.transcription === 'string' ? candidate.transcription.trim() : '',
     createdAt: typeof candidate.createdAt === 'number' ? candidate.createdAt : Date.now(),
   };

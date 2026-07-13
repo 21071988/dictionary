@@ -20,7 +20,13 @@
     "importSuccess": "Import complete",
     "addedLabel": "Added",
     "updatedLabel": "Updated",
-    "importError": "Could not import file. Please check the format."
+    "importError": "Could not import file. Please check the format.",
+    "noTranslation": "No translation"
+  },
+  "header": {
+    "learning": "Learning",
+    "word": "Word",
+    "translation": "Translation"
   },
   "exportImport": {
     "exportDescription": "Download all your cards as a JSON file.",
@@ -56,6 +62,6 @@
     "know": "Know"
   },
   "flashcard": {
-    "hint": "tap to reveal translation"
+    "hint": "tap to reveal answer"
   }
 }

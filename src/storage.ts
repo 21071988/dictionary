@@ -1,6 +1,7 @@
-import type { WordCard } from './types';
+import type { PrimaryField, WordCard } from './types';
 
 const STORAGE_KEY = 'dict-app:words';
+const PRIMARY_FIELD_KEY = 'dict-app:primaryField';
 
 export function loadWords(): WordCard[] {
   try {
@@ -16,4 +17,12 @@ export function loadWords(): WordCard[] {
 
 export function saveWords(words: WordCard[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(words));
+}
+
+export function loadPrimaryField(): PrimaryField {
+  return localStorage.getItem(PRIMARY_FIELD_KEY) === 'translation' ? 'translation' : 'word';
+}
+
+export function savePrimaryField(field: PrimaryField): void {
+  localStorage.setItem(PRIMARY_FIELD_KEY, field);
 }

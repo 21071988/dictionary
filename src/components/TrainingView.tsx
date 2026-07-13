@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  IconButton,
   Stack,
   Typography,
   Slider,
@@ -12,12 +13,15 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ReplayIcon from '@mui/icons-material/Replay';
 import SchoolIcon from '@mui/icons-material/School';
-import type { WordCard } from '../types';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import type { PrimaryField, WordCard } from '../types';
 import { Flashcard } from './Flashcard';
 import strings from '../strings.json';
 
 interface TrainingViewProps {
   words: WordCard[];
+  primaryField: PrimaryField;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -31,7 +35,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 type Stage = 'setup' | 'session' | 'done';
 
-export function TrainingView({ words }: TrainingViewProps) {
+export function TrainingView({ words, primaryField }: TrainingViewProps) {
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [session, setSession] = useState<WordCard[]>([]);
@@ -39,8 +43,10 @@ export function TrainingView({ words }: TrainingViewProps) {
   const [flipped, setFlipped] = useState(false);
   const [known, setKnown] = useState(0);
   const [unknown, setUnknown] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   const maxCount = Math.max(words.length, 1);
+  const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const currentCard = session[index];
 
@@ -63,6 +69,25 @@ export function TrainingView({ words }: TrainingViewProps) {
       setIndex((v) => v + 1);
       setFlipped(false);
     }
+  };
+
+  const goTo = (newIndex: number) => {
+    if (newIndex < 0 || newIndex >= session.length) return;
+    setIndex(newIndex);
+    setFlipped(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    const threshold = 50;
+    if (deltaX > threshold) goTo(index - 1);
+    else if (deltaX < -threshold) goTo(index + 1);
   };
 
   const progress = useMemo(
@@ -146,16 +171,33 @@ export function TrainingView({ words }: TrainingViewProps) {
         <LinearProgress variant="determinate" value={progress} sx={{ borderRadius: 1 }} />
       </Box>
 
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
+      >
+        <IconButton onClick={() => goTo(index - 1)} disabled={index === 0} aria-label="previous">
+          <ChevronLeftIcon />
+        </IconButton>
+
         {currentCard && (
           <Flashcard
-            word={currentCard.word}
-            transcription={currentCard.transcription}
-            translation={currentCard.translation}
+            frontText={currentCard[primaryField] || strings.dictionary.noTranslation}
+            backText={currentCard[secondaryField] || strings.dictionary.noTranslation}
+            frontTranscription={primaryField === 'word' ? currentCard.transcription : undefined}
+            backTranscription={secondaryField === 'word' ? currentCard.transcription : undefined}
             flipped={flipped}
             onFlip={() => setFlipped((v) => !v)}
           />
         )}
+
+        <IconButton
+          onClick={() => goTo(index + 1)}
+          disabled={index >= session.length - 1}
+          aria-label="next"
+        >
+          <ChevronRightIcon />
+        </IconButton>
       </Box>
 
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2, pb: 1 }}>

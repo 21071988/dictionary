@@ -3,21 +3,29 @@ import TouchAppIcon from '@mui/icons-material/TouchApp';
 import strings from '../strings.json';
 
 interface FlashcardProps {
-  word: string;
-  transcription: string;
-  translation: string;
+  frontText: string;
+  backText: string;
+  frontTranscription?: string;
+  backTranscription?: string;
   flipped: boolean;
   onFlip: () => void;
 }
 
-export function Flashcard({ word, transcription, translation, flipped, onFlip }: FlashcardProps) {
+export function Flashcard({
+  frontText,
+  backText,
+  frontTranscription,
+  backTranscription,
+  flipped,
+  onFlip,
+}: FlashcardProps) {
   return (
     <Box
       onClick={onFlip}
       sx={{
         width: '100%',
         maxWidth: 380,
-        height: 240,
+        height: 280,
         mx: 'auto',
         perspective: 1200,
         cursor: 'pointer',
@@ -52,11 +60,11 @@ export function Flashcard({ word, transcription, translation, flipped, onFlip }:
           }}
         >
           <Typography variant="h4" fontWeight={700}>
-            {word}
+            {frontText}
           </Typography>
-          {transcription && (
+          {frontTranscription && (
             <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1 }}>
-              [{transcription}]
+              [{frontTranscription}]
             </Typography>
           )}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 3, opacity: 0.75 }}>
@@ -85,8 +93,13 @@ export function Flashcard({ word, transcription, translation, flipped, onFlip }:
           }}
         >
           <Typography variant="h4" fontWeight={700}>
-            {translation}
+            {backText}
           </Typography>
+          {backTranscription && (
+            <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1 }}>
+              [{backTranscription}]
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AppBar,
   Box,
@@ -23,7 +23,9 @@ import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
 import { TrainingView } from './components/TrainingView';
 import { ExportImportView } from './components/ExportImportView';
-import type { ViewKey } from './types';
+import { LanguageToggle } from './components/LanguageToggle';
+import { loadPrimaryField, savePrimaryField } from './storage';
+import type { PrimaryField, ViewKey } from './types';
 import strings from './strings.json';
 
 const NAV_ITEMS: { key: ViewKey; label: string; icon: React.ReactElement }[] = [
@@ -37,8 +39,13 @@ const DRAWER_WIDTH = 220;
 
 export default function App() {
   const [view, setView] = useState<ViewKey>('dictionary');
+  const [primaryField, setPrimaryField] = useState<PrimaryField>(() => loadPrimaryField());
   const isDesktop = useMediaQuery('(min-width:900px)');
   const { words, addWord, updateWord, deleteWord, importWords } = useWords();
+
+  useEffect(() => {
+    savePrimaryField(primaryField);
+  }, [primaryField]);
 
   const content = (
     <>
@@ -48,10 +55,11 @@ export default function App() {
           onUpdate={updateWord}
           onDelete={deleteWord}
           onNavigate={setView}
+          primaryField={primaryField}
         />
       )}
       {view === 'add' && <AddCardView onAdd={addWord} />}
-      {view === 'training' && <TrainingView words={words} />}
+      {view === 'training' && <TrainingView words={words} primaryField={primaryField} />}
       {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
     </>
   );
@@ -73,6 +81,9 @@ export default function App() {
               {strings.app.title}
             </Typography>
           </Toolbar>
+          <Box sx={{ px: 2, pb: 1.5 }}>
+            <LanguageToggle value={primaryField} onChange={setPrimaryField} />
+          </Box>
           <List sx={{ px: 1 }}>
             {NAV_ITEMS.map((item) => (
               <ListItemButton
@@ -103,9 +114,23 @@ export default function App() {
           <AppBar position="static" color="primary" elevation={0}>
             <Toolbar variant="dense">
               <MenuBookIcon sx={{ mr: 1 }} />
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6" fontWeight={700} sx={{ flex: 1, minWidth: 0 }} noWrap>
                 {NAV_ITEMS.find((i) => i.key === view)?.label ?? strings.app.title}
               </Typography>
+              <LanguageToggle
+                value={primaryField}
+                onChange={setPrimaryField}
+                sx={{
+                  '& .MuiToggleButton-root': {
+                    color: 'primary.contrastText',
+                    borderColor: 'rgba(255,255,255,0.5)',
+                  },
+                  '& .MuiToggleButton-root.Mui-selected': {
+                    color: 'primary.main',
+                    bgcolor: 'primary.contrastText',
+                  },
+                }}
+              />
             </Toolbar>
           </AppBar>
         )}

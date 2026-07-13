@@ -21,7 +21,7 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
     setTranscription(initial?.transcription ?? '');
   }, [initial]);
 
-  const canSubmit = word.trim().length > 0 && translation.trim().length > 0;
+  const canSubmit = word.trim().length > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +49,6 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
         value={translation}
         onChange={(e) => setTranslation(e.target.value)}
         fullWidth
-        required
       />
       <TextField
         label={strings.form.transcription}

@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import type { ViewKey, WordCard, WordCardInput } from '../types';
+import type { PrimaryField, ViewKey, WordCard, WordCardInput } from '../types';
 import { EditWordDialog } from './EditWordDialog';
 import strings from '../strings.json';
 
@@ -29,18 +29,26 @@ interface DictionaryViewProps {
   onUpdate: (id: string, input: WordCardInput) => void;
   onDelete: (id: string) => void;
   onNavigate: (view: ViewKey) => void;
+  primaryField: PrimaryField;
 }
 
-function getLetter(word: string): string {
-  const first = word.trim().charAt(0);
+function getLetter(text: string): string {
+  const first = text.trim().charAt(0);
   return first ? first.toLocaleUpperCase() : '#';
 }
 
-export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: DictionaryViewProps) {
+export function DictionaryView({
+  words,
+  onUpdate,
+  onDelete,
+  onNavigate,
+  primaryField,
+}: DictionaryViewProps) {
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<WordCard | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const letterRefs = useRef<Map<string, HTMLLIElement>>(new Map());
+  const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const filtered = useMemo(() => {
     const q = query.trim().toLocaleLowerCase();
@@ -55,16 +63,16 @@ export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: Dictio
   const grouped = useMemo(() => {
     const map = new Map<string, WordCard[]>();
     for (const w of filtered) {
-      const letter = getLetter(w.word);
+      const letter = getLetter(w[primaryField]);
       if (!map.has(letter)) map.set(letter, []);
       map.get(letter)!.push(w);
     }
     const letters = Array.from(map.keys()).sort((a, b) => a.localeCompare(b));
     for (const letter of letters) {
-      map.get(letter)!.sort((a, b) => a.word.localeCompare(b.word));
+      map.get(letter)!.sort((a, b) => a[primaryField].localeCompare(b[primaryField]));
     }
     return { map, letters };
-  }, [filtered]);
+  }, [filtered, primaryField]);
 
   const scrollToLetter = (letter: string) => {
     const el = letterRefs.current.get(letter);
@@ -205,7 +213,15 @@ export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: Dictio
                     >
                       {letter}
                     </ListSubheader>
-                    {grouped.map.get(letter)!.map((card) => (
+                    {grouped.map.get(letter)!.map((card) => {
+                      const headline = card[primaryField];
+                      const sub = card[secondaryField];
+                      const secondaryText = sub.trim()
+                        ? secondaryField === 'word' && card.transcription
+                          ? `${sub} [${card.transcription}]`
+                          : sub
+                        : strings.dictionary.noTranslation;
+                      return (
                       <ListItemButton
                         key={card.id}
                         onClick={() => setEditing(card)}
@@ -215,9 +231,9 @@ export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: Dictio
                           primary={
                             <Stack direction="row" spacing={1} alignItems="baseline" flexWrap="wrap">
                               <Typography component="span" fontWeight={600}>
-                                {card.word}
+                                {headline || strings.dictionary.noTranslation}
                               </Typography>
-                              {card.transcription && (
+                              {primaryField === 'word' && card.transcription && (
                                 <Typography
                                   component="span"
                                   variant="body2"
@@ -228,7 +244,7 @@ export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: Dictio
                               )}
                             </Stack>
                           }
-                          secondary={card.translation}
+                          secondary={secondaryText}
                         />
                         <Stack direction="row" spacing={0.5} sx={{ ml: 1 }}>
                           <IconButton
@@ -253,7 +269,8 @@ export function DictionaryView({ words, onUpdate, onDelete, onNavigate }: Dictio
                           </IconButton>
                         </Stack>
                       </ListItemButton>
-                    ))}
+                      );
+                    })}
                   </ul>
                 </li>
               ))}
