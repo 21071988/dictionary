@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "Dictionary"
+  },
+  "nav": {
+    "dictionary": "Dictionary",
+    "add": "Add",
+    "training": "Training"
+  },
+  "dictionary": {
+    "searchPlaceholder": "Search word or translation",
+    "empty": "The dictionary is empty. Add your first card on the \"Add\" tab.",
+    "noResults": "Nothing found",
+    "edit": "Edit",
+    "delete": "Delete",
+    "export": "Export",
+    "import": "Import",
+    "importSuccess": "Import complete",
+    "addedLabel": "Added",
+    "updatedLabel": "Updated",
+    "importError": "Could not import file. Please check the format."
+  },
+  "form": {
+    "word": "Word",
+    "translation": "Translation",
+    "transcription": "Transcription",
+    "transcriptionPlaceholder": "optional"
+  },
+  "editDialog": {
+    "title": "Edit card",
+    "save": "Save"
+  },
+  "addCard": {
+    "title": "New card",
+    "submit": "Add to dictionary",
+    "added": "Card added"
+  },
+  "training": {
+    "empty": "Add cards to the dictionary to start training.",
+    "setupTitle": "Training",
+    "howMany": "How many words to review?",
+    "start": "Start training",
+    "done": "Training complete!",
+    "knownLabel": "Known",
+    "unknownLabel": "Unknown",
+    "outOf": "out of",
+    "again": "Try again",
+    "progressOf": "of",
+    "dontKnow": "Don't know",
+    "know": "Know"
+  },
+  "flashcard": {
+    "hint": "tap to reveal translation"
+  }
+}
