@@ -8,6 +8,6 @@ export interface WordCard {
 
 export type WordCardInput = Pick<WordCard, 'word' | 'translation' | 'transcription'>;
 
-export type ViewKey = 'dictionary' | 'add' | 'training' | 'exportImport';
+export type ViewKey = 'dictionary' | 'add' | 'training' | 'exportImport' | 'missingTranslation';
 
 export type PrimaryField = 'word' | 'translation';

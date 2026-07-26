@@ -18,6 +18,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SchoolIcon from '@mui/icons-material/School';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useWords } from './hooks/useWords';
 import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
@@ -33,6 +34,11 @@ const NAV_ITEMS: { key: ViewKey; label: string; icon: React.ReactElement }[] = [
   { key: 'add', label: strings.nav.add, icon: <AddCircleIcon /> },
   { key: 'training', label: strings.nav.training, icon: <SchoolIcon /> },
   { key: 'exportImport', label: strings.nav.exportImport, icon: <ImportExportIcon /> },
+  {
+    key: 'missingTranslation',
+    label: strings.nav.missingTranslation,
+    icon: <ReportProblemIcon />,
+  },
 ];
 
 const DRAWER_WIDTH = 220;
@@ -61,6 +67,16 @@ export default function App() {
       {view === 'add' && <AddCardView onAdd={addWord} />}
       {view === 'training' && <TrainingView words={words} primaryField={primaryField} />}
       {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
+      {view === 'missingTranslation' && (
+        <DictionaryView
+          words={words.filter((w) => !w.translation.trim())}
+          onUpdate={updateWord}
+          onDelete={deleteWord}
+          onNavigate={setView}
+          primaryField={primaryField}
+          missingTranslationOnly
+        />
+      )}
     </>
   );
 

@@ -6,7 +6,8 @@
     "dictionary": "Dictionary",
     "add": "Add",
     "training": "Training",
-    "exportImport": "Export / Import"
+    "exportImport": "Export / Import",
+    "missingTranslation": "Missing translation"
   },
   "dictionary": {
     "searchPlaceholder": "Search word or translation",
@@ -21,7 +22,8 @@
     "addedLabel": "Added",
     "updatedLabel": "Updated",
     "importError": "Could not import file. Please check the format.",
-    "noTranslation": "No translation"
+    "noTranslation": "No translation",
+    "noMissingTranslation": "All cards have a translation!"
   },
   "header": {
     "learning": "Learning",
