@@ -14,7 +14,7 @@ export function StatsBar({ words, sx }: StatsBarProps) {
   const known = words.filter((w) => w.knownCount >= WELL_KNOWN_THRESHOLD).length;
 
   return (
-    <Stack direction="row" flexWrap="wrap" sx={{ py: 1, pl: 3, pr: 1, ...sx }}>
+    <Stack direction="row" flexWrap="wrap" spacing={2} sx={{ py: 1, pl: 3, pr: 1, ...sx }}>
       <Typography variant="body2" color="text.secondary">
         {total} {strings.stats.totalWords}
       </Typography>
