@@ -4,6 +4,7 @@ import {
   Box,
   BottomNavigation,
   BottomNavigationAction,
+  Divider,
   Drawer,
   List,
   ListItemButton,
@@ -18,11 +19,13 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SchoolIcon from '@mui/icons-material/School';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useWords } from './hooks/useWords';
 import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
 import { TrainingView } from './components/TrainingView';
 import { ExportImportView } from './components/ExportImportView';
+import { StatsBar } from './components/StatsBar';
 import { LanguageToggle } from './components/LanguageToggle';
 import { loadPrimaryField, savePrimaryField } from './storage';
 import type { PrimaryField, ViewKey } from './types';
@@ -33,6 +36,11 @@ const NAV_ITEMS: { key: ViewKey; label: string; icon: React.ReactElement }[] = [
   { key: 'add', label: strings.nav.add, icon: <AddCircleIcon /> },
   { key: 'training', label: strings.nav.training, icon: <SchoolIcon /> },
   { key: 'exportImport', label: strings.nav.exportImport, icon: <ImportExportIcon /> },
+  {
+    key: 'missingTranslation',
+    label: strings.nav.missingTranslation,
+    icon: <ReportProblemIcon />,
+  },
 ];
 
 const DRAWER_WIDTH = 220;
@@ -41,7 +49,7 @@ export default function App() {
   const [view, setView] = useState<ViewKey>('dictionary');
   const [primaryField, setPrimaryField] = useState<PrimaryField>(() => loadPrimaryField());
   const isDesktop = useMediaQuery('(min-width:900px)');
-  const { words, addWord, updateWord, deleteWord, importWords } = useWords();
+  const { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount } = useWords();
 
   useEffect(() => {
     savePrimaryField(primaryField);
@@ -59,8 +67,24 @@ export default function App() {
         />
       )}
       {view === 'add' && <AddCardView onAdd={addWord} />}
-      {view === 'training' && <TrainingView words={words} primaryField={primaryField} />}
+      {view === 'training' && (
+        <TrainingView
+          words={words}
+          primaryField={primaryField}
+          onMarkKnown={incrementKnownCount}
+        />
+      )}
       {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
+      {view === 'missingTranslation' && (
+        <DictionaryView
+          words={words.filter((w) => !w.translation.trim())}
+          onUpdate={updateWord}
+          onDelete={deleteWord}
+          onNavigate={setView}
+          primaryField={primaryField}
+          missingTranslationOnly
+        />
+      )}
     </>
   );
 
@@ -72,7 +96,12 @@ export default function App() {
           sx={{
             width: DRAWER_WIDTH,
             flexShrink: 0,
-            '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' },
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+            },
           }}
         >
           <Toolbar sx={{ px: 2 }}>
@@ -97,6 +126,10 @@ export default function App() {
               </ListItemButton>
             ))}
           </List>
+          <Box sx={{ mt: 'auto' }}>
+            <Divider />
+            <StatsBar words={words} />
+          </Box>
         </Drawer>
       )}
 
@@ -139,6 +172,8 @@ export default function App() {
 
         {!isDesktop && (
           <Paper elevation={3} sx={{ flexShrink: 0 }}>
+            <StatsBar words={words} sx={{ py: 0.5 }} />
+            <Divider />
             <BottomNavigation
               showLabels
               value={view}

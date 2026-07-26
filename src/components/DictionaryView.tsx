@@ -30,6 +30,7 @@ interface DictionaryViewProps {
   onDelete: (id: string) => void;
   onNavigate: (view: ViewKey) => void;
   primaryField: PrimaryField;
+  missingTranslationOnly?: boolean;
 }
 
 function getLetter(text: string): string {
@@ -43,6 +44,7 @@ export function DictionaryView({
   onDelete,
   onNavigate,
   primaryField,
+  missingTranslationOnly = false,
 }: DictionaryViewProps) {
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<WordCard | null>(null);
@@ -118,24 +120,26 @@ export function DictionaryView({
         <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: 4 }} spacing={2}>
           <MenuBookIcon sx={{ fontSize: 56, color: 'text.disabled' }} />
           <Typography color="text.secondary" align="center">
-            {strings.dictionary.empty}
+            {missingTranslationOnly ? strings.dictionary.noMissingTranslation : strings.dictionary.empty}
           </Typography>
-          <Stack direction="row" spacing={1.5}>
-            <Button
-              variant="contained"
-              startIcon={<AddCircleIcon />}
-              onClick={() => onNavigate('add')}
-            >
-              {strings.dictionary.addFirstWord}
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowDownwardIcon />}
-              onClick={() => onNavigate('exportImport')}
-            >
-              {strings.dictionary.import}
-            </Button>
-          </Stack>
+          {!missingTranslationOnly && (
+            <Stack direction="row" spacing={1.5}>
+              <Button
+                variant="contained"
+                startIcon={<AddCircleIcon />}
+                onClick={() => onNavigate('add')}
+              >
+                {strings.dictionary.addFirstWord}
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<ArrowDownwardIcon />}
+                onClick={() => onNavigate('exportImport')}
+              >
+                {strings.dictionary.import}
+              </Button>
+            </Stack>
+          )}
         </Stack>
       </Box>
     );
@@ -216,6 +220,7 @@ export function DictionaryView({
                     {grouped.map.get(letter)!.map((card) => {
                       const headline = card[primaryField];
                       const sub = card[secondaryField];
+                      const missingTranslation = !card.translation.trim();
                       const secondaryText = sub.trim()
                         ? secondaryField === 'word' && card.transcription
                           ? `${sub} [${card.transcription}]`
@@ -230,7 +235,11 @@ export function DictionaryView({
                         <ListItemText
                           primary={
                             <Stack direction="row" spacing={1} alignItems="baseline" flexWrap="wrap">
-                              <Typography component="span" fontWeight={600}>
+                              <Typography
+                                component="span"
+                                fontWeight={600}
+                                color={missingTranslation ? 'error.main' : undefined}
+                              >
                                 {headline || strings.dictionary.noTranslation}
                               </Typography>
                               {primaryField === 'word' && card.transcription && (
@@ -245,6 +254,11 @@ export function DictionaryView({
                             </Stack>
                           }
                           secondary={secondaryText}
+                          slotProps={{
+                            secondary: {
+                              color: missingTranslation ? 'error.main' : undefined,
+                            },
+                          }}
                         />
                         <Stack direction="row" spacing={0.5} sx={{ ml: 1 }}>
                           <IconButton

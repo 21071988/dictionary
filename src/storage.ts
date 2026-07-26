@@ -9,7 +9,10 @@ export function loadWords(): WordCard[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed;
+    return parsed.map((w) => ({
+      ...w,
+      knownCount: typeof w.knownCount === 'number' ? w.knownCount : 0,
+    }));
   } catch {
     return [];
   }

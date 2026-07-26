@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Stack, TextField, Button } from '@mui/material';
 import type { WordCard, WordCardInput } from '../types';
 import strings from '../strings.json';
@@ -14,6 +14,7 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
   const [word, setWord] = useState(initial?.word ?? '');
   const [translation, setTranslation] = useState(initial?.translation ?? '');
   const [transcription, setTranscription] = useState(initial?.transcription ?? '');
+  const wordInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setWord(initial?.word ?? '');
@@ -31,6 +32,7 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
       setWord('');
       setTranslation('');
       setTranscription('');
+      wordInputRef.current?.focus();
     }
   };
 
@@ -41,6 +43,7 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
         value={word}
         onChange={(e) => setWord(e.target.value)}
         autoFocus={autoFocusWord}
+        inputRef={wordInputRef}
         fullWidth
         required
       />

@@ -6,7 +6,6 @@ import {
   Stack,
   Typography,
   Slider,
-  LinearProgress,
   Paper,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -16,53 +15,58 @@ import SchoolIcon from '@mui/icons-material/School';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { PrimaryField, WordCard } from '../types';
+import { WELL_KNOWN_THRESHOLD } from '../types';
 import { Flashcard } from './Flashcard';
 import strings from '../strings.json';
 
 interface TrainingViewProps {
   words: WordCard[];
   primaryField: PrimaryField;
+  onMarkKnown: (id: string) => void;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
+const WELL_KNOWN_WEIGHT = 0.3;
+
+function weightedShuffle(cards: WordCard[]): WordCard[] {
+  return cards
+    .map((card) => {
+      const weight = card.knownCount >= WELL_KNOWN_THRESHOLD ? WELL_KNOWN_WEIGHT : 1;
+      return { card, key: Math.random() ** (1 / weight) };
+    })
+    .sort((a, b) => b.key - a.key)
+    .map((entry) => entry.card);
 }
 
 type Stage = 'setup' | 'session' | 'done';
 
-export function TrainingView({ words, primaryField }: TrainingViewProps) {
+export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewProps) {
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [session, setSession] = useState<WordCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [known, setKnown] = useState(0);
-  const [unknown, setUnknown] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const touchStartX = useRef<number | null>(null);
 
-  const maxCount = Math.max(words.length, 1);
   const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const currentCard = session[index];
 
   const startSession = () => {
-    const picked = shuffle(words).slice(0, count);
+    const picked = weightedShuffle(words).slice(0, count);
     setSession(picked);
     setIndex(0);
     setFlipped(false);
-    setKnown(0);
-    setUnknown(0);
+    setAnswers({});
     setStage('session');
   };
 
   const handleAnswer = (isKnown: boolean) => {
-    if (isKnown) setKnown((v) => v + 1);
-    else setUnknown((v) => v + 1);
+    const previousAnswer = answers[index];
+    setAnswers((prev) => ({ ...prev, [index]: isKnown }));
+    if (isKnown && previousAnswer !== true && currentCard) {
+      onMarkKnown(currentCard.id);
+    }
     if (index + 1 >= session.length) {
       setStage('done');
     } else {
@@ -90,9 +94,13 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
     else if (deltaX < -threshold) goTo(index + 1);
   };
 
-  const progress = useMemo(
-    () => (session.length ? (index / session.length) * 100 : 0),
-    [index, session.length],
+  const known = useMemo(
+    () => Object.values(answers).filter((v) => v).length,
+    [answers],
+  );
+  const unknown = useMemo(
+    () => Object.values(answers).filter((v) => !v).length,
+    [answers],
   );
 
   if (words.length === 0) {
@@ -114,17 +122,17 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
         </Typography>
         <Paper variant="outlined" sx={{ p: 3 }}>
           <Typography gutterBottom color="text.secondary">
-            {strings.training.howMany}
+            {strings.training.howMany} {count} ?
           </Typography>
           <Stack direction="row" spacing={2} alignItems="center">
             <Slider
               value={count}
               min={1}
-              max={maxCount}
+              max={40}
               step={1}
               marks={[
                 { value: 1, label: '1' },
-                { value: maxCount, label: String(maxCount) },
+                { value: 40, label: '40' },
               ]}
               valueLabelDisplay="auto"
               onChange={(_, v) => setCount(v as number)}
@@ -168,7 +176,16 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
             {index + 1} {strings.training.progressOf} {session.length}
           </Typography>
         </Stack>
-        <LinearProgress variant="determinate" value={progress} sx={{ borderRadius: 1 }} />
+        <Slider
+          value={index}
+          min={0}
+          max={Math.max(session.length - 1, 0)}
+          step={1}
+          onChange={(_, v) => goTo(v as number)}
+          valueLabelDisplay="off"
+          size="small"
+          sx={{ py: 0 }}
+        />
       </Box>
 
       <Box
@@ -202,19 +219,17 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
 
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2, pb: 1 }}>
         <Button
-          variant="outlined"
+          variant={answers[index] === false ? 'contained' : 'outlined'}
           color="error"
           startIcon={<CancelIcon />}
-          disabled={!flipped}
           onClick={() => handleAnswer(false)}
         >
           {strings.training.dontKnow}
         </Button>
         <Button
-          variant="outlined"
+          variant={answers[index] === true ? 'contained' : 'outlined'}
           color="success"
           startIcon={<CheckCircleIcon />}
-          disabled={!flipped}
           onClick={() => handleAnswer(true)}
         >
           {strings.training.know}
