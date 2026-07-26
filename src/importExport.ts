@@ -23,6 +23,7 @@ function normalizeCard(value: unknown): WordCard | null {
     translation: typeof candidate.translation === 'string' ? candidate.translation.trim() : '',
     transcription: typeof candidate.transcription === 'string' ? candidate.transcription.trim() : '',
     createdAt: typeof candidate.createdAt === 'number' ? candidate.createdAt : Date.now(),
+    knownCount: typeof candidate.knownCount === 'number' ? candidate.knownCount : 0,
   };
 }
 

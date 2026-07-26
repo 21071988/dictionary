@@ -65,5 +65,9 @@
   },
   "flashcard": {
     "hint": "tap to reveal answer"
+  },
+  "stats": {
+    "totalWords": "Total words",
+    "knownWords": "Words you know"
   }
 }

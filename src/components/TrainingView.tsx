@@ -15,26 +15,31 @@ import SchoolIcon from '@mui/icons-material/School';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { PrimaryField, WordCard } from '../types';
+import { WELL_KNOWN_THRESHOLD } from '../types';
 import { Flashcard } from './Flashcard';
 import strings from '../strings.json';
 
 interface TrainingViewProps {
   words: WordCard[];
   primaryField: PrimaryField;
+  onMarkKnown: (id: string) => void;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
+const WELL_KNOWN_WEIGHT = 0.3;
+
+function weightedShuffle(cards: WordCard[]): WordCard[] {
+  return cards
+    .map((card) => {
+      const weight = card.knownCount >= WELL_KNOWN_THRESHOLD ? WELL_KNOWN_WEIGHT : 1;
+      return { card, key: Math.random() ** (1 / weight) };
+    })
+    .sort((a, b) => b.key - a.key)
+    .map((entry) => entry.card);
 }
 
 type Stage = 'setup' | 'session' | 'done';
 
-export function TrainingView({ words, primaryField }: TrainingViewProps) {
+export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewProps) {
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [session, setSession] = useState<WordCard[]>([]);
@@ -48,7 +53,7 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
   const currentCard = session[index];
 
   const startSession = () => {
-    const picked = shuffle(words).slice(0, count);
+    const picked = weightedShuffle(words).slice(0, count);
     setSession(picked);
     setIndex(0);
     setFlipped(false);
@@ -57,7 +62,11 @@ export function TrainingView({ words, primaryField }: TrainingViewProps) {
   };
 
   const handleAnswer = (isKnown: boolean) => {
+    const previousAnswer = answers[index];
     setAnswers((prev) => ({ ...prev, [index]: isKnown }));
+    if (isKnown && previousAnswer !== true && currentCard) {
+      onMarkKnown(currentCard.id);
+    }
     if (index + 1 >= session.length) {
       setStage('done');
     } else {

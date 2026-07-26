@@ -4,6 +4,7 @@ import {
   Box,
   BottomNavigation,
   BottomNavigationAction,
+  Divider,
   Drawer,
   List,
   ListItemButton,
@@ -24,6 +25,7 @@ import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
 import { TrainingView } from './components/TrainingView';
 import { ExportImportView } from './components/ExportImportView';
+import { StatsBar } from './components/StatsBar';
 import { LanguageToggle } from './components/LanguageToggle';
 import { loadPrimaryField, savePrimaryField } from './storage';
 import type { PrimaryField, ViewKey } from './types';
@@ -47,7 +49,7 @@ export default function App() {
   const [view, setView] = useState<ViewKey>('dictionary');
   const [primaryField, setPrimaryField] = useState<PrimaryField>(() => loadPrimaryField());
   const isDesktop = useMediaQuery('(min-width:900px)');
-  const { words, addWord, updateWord, deleteWord, importWords } = useWords();
+  const { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount } = useWords();
 
   useEffect(() => {
     savePrimaryField(primaryField);
@@ -65,7 +67,13 @@ export default function App() {
         />
       )}
       {view === 'add' && <AddCardView onAdd={addWord} />}
-      {view === 'training' && <TrainingView words={words} primaryField={primaryField} />}
+      {view === 'training' && (
+        <TrainingView
+          words={words}
+          primaryField={primaryField}
+          onMarkKnown={incrementKnownCount}
+        />
+      )}
       {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
       {view === 'missingTranslation' && (
         <DictionaryView
@@ -88,7 +96,12 @@ export default function App() {
           sx={{
             width: DRAWER_WIDTH,
             flexShrink: 0,
-            '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' },
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+            },
           }}
         >
           <Toolbar sx={{ px: 2 }}>
@@ -113,6 +126,10 @@ export default function App() {
               </ListItemButton>
             ))}
           </List>
+          <Box sx={{ mt: 'auto' }}>
+            <Divider />
+            <StatsBar words={words} />
+          </Box>
         </Drawer>
       )}
 
@@ -155,6 +172,8 @@ export default function App() {
 
         {!isDesktop && (
           <Paper elevation={3} sx={{ flexShrink: 0 }}>
+            <StatsBar words={words} sx={{ py: 0.5 }} />
+            <Divider />
             <BottomNavigation
               showLabels
               value={view}

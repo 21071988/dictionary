@@ -13,13 +13,21 @@ export function useWords() {
     saveWords(words);
   }, [words]);
 
+  const setWordEntity = (input: WordCardInput) => {
+    return {
+        word: input.word.trim(),
+        translation: input.translation.trim(),
+        transcription: input.transcription.trim(),
+    }
+  }
   const addWord = useCallback((input: WordCardInput) => {
     const card: WordCard = {
-      id: uuid(),
-      word: input.word.trim(),
-      translation: input.translation.trim(),
-      transcription: input.transcription.trim(),
-      createdAt: Date.now(),
+      ...{
+          id: uuid(),
+          createdAt: Date.now(),
+          knownCount: 0,
+        },
+      ...setWordEntity(input)
     };
     setWords((prev) => [...prev, card]);
     return card;
@@ -29,12 +37,7 @@ export function useWords() {
     setWords((prev) =>
       prev.map((w) =>
         w.id === id
-          ? {
-              ...w,
-              word: input.word.trim(),
-              translation: input.translation.trim(),
-              transcription: input.transcription.trim(),
-            }
+          ? { ...w, ...setWordEntity(input) }
           : w,
       ),
     );
@@ -44,6 +47,12 @@ export function useWords() {
     setWords((prev) => prev.filter((w) => w.id !== id));
   }, []);
 
+  const incrementKnownCount = useCallback((id: string) => {
+    setWords((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, knownCount: w.knownCount + 1 } : w)),
+    );
+  }, []);
+
   const importWords = useCallback((incoming: WordCard[]): Omit<MergeResult, 'words'> => {
     const result = mergeWords(wordsRef.current, incoming);
     wordsRef.current = result.words;
@@ -51,5 +60,5 @@ export function useWords() {
     return { added: result.added, updated: result.updated };
   }, []);
 
-  return { words, addWord, updateWord, deleteWord, importWords };
+  return { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount };
 }
