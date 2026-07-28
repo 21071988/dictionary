@@ -61,7 +61,8 @@
     "again": "Try again",
     "progressOf": "of",
     "dontKnow": "Don't know",
-    "know": "Know"
+    "know": "Know",
+    "showAllCards": "Show all cards"
   },
   "flashcard": {
     "hint": "tap to reveal answer"
