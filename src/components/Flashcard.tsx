@@ -1,6 +1,10 @@
+>import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import strings from '../strings.json';
+import { loadCardFlipCount, saveCardFlipCount } from '../storage';
+
+const FLIP_HINT_LIMIT = 3;
 
 interface FlashcardProps {
   frontText: string;
@@ -19,9 +23,20 @@ export function Flashcard({
   flipped,
   onFlip,
 }: FlashcardProps) {
+  const [flipCount, setFlipCount] = useState(loadCardFlipCount);
+
+  const handleClick = () => {
+    if (flipCount < FLIP_HINT_LIMIT) {
+      const next = flipCount + 1;
+      setFlipCount(next);
+      saveCardFlipCount(next);
+    }
+    onFlip();
+  };
+
   return (
     <Box
-      onClick={onFlip}
+      onClick={handleClick}
       sx={{
         width: '100%',
         maxWidth: 380,
@@ -67,10 +82,12 @@ export function Flashcard({
               [{frontTranscription}]
             </Typography>
           )}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 3, opacity: 0.75 }}>
-            <TouchAppIcon fontSize="small" />
-            <Typography variant="caption">{strings.flashcard.hint}</Typography>
-          </Box>
+          {flipCount < FLIP_HINT_LIMIT && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 3, opacity: 0.75 }}>
+              <TouchAppIcon fontSize="small" />
+              <Typography variant="caption">{strings.flashcard.hint}</Typography>
+            </Box>
+          )}
         </Box>
 
         {/* Back */}
