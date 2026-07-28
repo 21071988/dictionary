@@ -89,7 +89,7 @@ export default function App() {
   );
 
   return (
-    <Box sx={{ display: 'flex', height: '100dvh' }}>
+    <Box sx={{ display: 'flex', height: '100dvh', overflowX: 'hidden' }}>
       {isDesktop && (
         <Drawer
           variant="permanent"
@@ -178,6 +178,16 @@ export default function App() {
               showLabels
               value={view}
               onChange={(_, newValue) => setView(newValue)}
+              sx={{
+                '& .MuiBottomNavigationAction-root': {
+                  minWidth: 0,
+                  maxWidth: 'none',
+                  px: 0.5,
+                },
+                '& .MuiBottomNavigationAction-label': {
+                  fontSize: '0.65rem',
+                },
+              }}
             >
               {NAV_ITEMS.map((item) => (
                 <BottomNavigationAction

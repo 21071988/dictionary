@@ -7,6 +7,8 @@ import {
   Typography,
   Slider,
   Paper,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -42,6 +44,7 @@ type Stage = 'setup' | 'session' | 'done';
 export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewProps) {
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
+  const [showAllCards, setShowAllCards] = useState(false);
   const [session, setSession] = useState<WordCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -51,6 +54,11 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
   const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const currentCard = session[index];
+
+  const visibleIndices = session
+    .map((_, i) => i)
+    .filter((i) => showAllCards || !answers[i]);
+  const visiblePos = visibleIndices.indexOf(index);
 
   const startSession = () => {
     const picked = weightedShuffle(words).slice(0, count);
@@ -63,22 +71,36 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
 
   const handleAnswer = (isKnown: boolean) => {
     const previousAnswer = answers[index];
-    setAnswers((prev) => ({ ...prev, [index]: isKnown }));
-    if (isKnown && previousAnswer !== true && currentCard) {
+    const updatedAnswers = { ...answers, [index]: isKnown };
+    setAnswers(updatedAnswers);
+    if (isKnown && !previousAnswer && currentCard) {
       onMarkKnown(currentCard.id);
     }
-    if (index + 1 >= session.length) {
+    if (session.every((_, i) => updatedAnswers[i])) {
       setStage('done');
-    } else {
-      setIndex((v) => v + 1);
-      setFlipped(false);
+      return;
     }
+    const remaining = session.map((_, i) => i).filter((i) => showAllCards || !updatedAnswers[i]);
+    const pos = remaining.indexOf(index);
+    setIndex(remaining[pos === -1 ? 0 : (pos + 1) % remaining.length]);
+    setFlipped(false);
   };
 
-  const goTo = (newIndex: number) => {
-    if (newIndex < 0 || newIndex >= session.length) return;
-    setIndex(newIndex);
+  const goTo = (newPos: number) => {
+    if (newPos < 0 || newPos >= visibleIndices.length) return;
+    setIndex(visibleIndices[newPos]);
     setFlipped(false);
+  };
+
+  const handleShowAllCardsChange = (checked: boolean) => {
+    setShowAllCards(checked);
+    if (!checked) {
+      const stillVisible = session.map((_, i) => i).filter((i) => !answers[i]);
+      if (stillVisible.length > 0 && !stillVisible.includes(index)) {
+        setIndex(stillVisible[0]);
+        setFlipped(false);
+      }
+    }
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -90,8 +112,8 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
     const threshold = 50;
-    if (deltaX > threshold) goTo(index - 1);
-    else if (deltaX < -threshold) goTo(index + 1);
+    if (deltaX > threshold) goTo(visiblePos - 1);
+    else if (deltaX < -threshold) goTo(visiblePos + 1);
   };
 
   const known = useMemo(
@@ -171,15 +193,26 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
   return (
     <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ mb: 2 }}>
-        <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
           <Typography variant="body2" color="text.secondary">
-            {index + 1} {strings.training.progressOf} {session.length}
+            {visiblePos + 1} {strings.training.progressOf} {visibleIndices.length}
           </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={showAllCards}
+                onChange={(e) => handleShowAllCardsChange(e.target.checked)}
+              />
+            }
+            label={strings.training.showAllCards}
+            sx={{ m: 0 }}
+          />
         </Stack>
         <Slider
-          value={index}
+          value={visiblePos < 0 ? 0 : visiblePos}
           min={0}
-          max={Math.max(session.length - 1, 0)}
+          max={Math.max(visibleIndices.length - 1, 0)}
           step={1}
           onChange={(_, v) => goTo(v as number)}
           valueLabelDisplay="off"
@@ -193,7 +226,7 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
         onTouchEnd={handleTouchEnd}
         sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
       >
-        <IconButton onClick={() => goTo(index - 1)} disabled={index === 0} aria-label="previous">
+        <IconButton onClick={() => goTo(visiblePos - 1)} disabled={visiblePos <= 0} aria-label="previous">
           <ChevronLeftIcon />
         </IconButton>
 
@@ -209,8 +242,8 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
         )}
 
         <IconButton
-          onClick={() => goTo(index + 1)}
-          disabled={index >= session.length - 1}
+          onClick={() => goTo(visiblePos + 1)}
+          disabled={visiblePos === -1 || visiblePos >= visibleIndices.length - 1}
           aria-label="next"
         >
           <ChevronRightIcon />
