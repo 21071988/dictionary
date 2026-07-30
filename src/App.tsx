@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -31,61 +32,86 @@ import { loadPrimaryField, savePrimaryField } from './storage';
 import type { PrimaryField, ViewKey } from './types';
 import strings from './strings.json';
 
-const NAV_ITEMS: { key: ViewKey; label: string; icon: React.ReactElement }[] = [
-  { key: 'dictionary', label: strings.nav.dictionary, icon: <MenuBookIcon /> },
-  { key: 'add', label: strings.nav.add, icon: <AddCircleIcon /> },
-  { key: 'training', label: strings.nav.training, icon: <SchoolIcon /> },
-  { key: 'exportImport', label: strings.nav.exportImport, icon: <ImportExportIcon /> },
+const NAV_ITEMS: { key: ViewKey; path: string; label: string; icon: React.ReactElement }[] = [
+  { key: 'dictionary', path: '/', label: strings.nav.dictionary, icon: <MenuBookIcon /> },
+  { key: 'add', path: '/add', label: strings.nav.add, icon: <AddCircleIcon /> },
+  { key: 'training', path: '/training', label: strings.nav.training, icon: <SchoolIcon /> },
+  {
+    key: 'exportImport',
+    path: '/export-import',
+    label: strings.nav.exportImport,
+    icon: <ImportExportIcon />,
+  },
   {
     key: 'missingTranslation',
+    path: '/missing-translation',
     label: strings.nav.missingTranslation,
     icon: <ReportProblemIcon />,
   },
 ];
 
+const pathForKey = (key: ViewKey): string =>
+  NAV_ITEMS.find((item) => item.key === key)?.path ?? '/';
+
 const DRAWER_WIDTH = 220;
 
 export default function App() {
-  const [view, setView] = useState<ViewKey>('dictionary');
   const [primaryField, setPrimaryField] = useState<PrimaryField>(() => loadPrimaryField());
   const isDesktop = useMediaQuery('(min-width:900px)');
   const { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount } = useWords();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
+  const navigateTo = (key: ViewKey) => navigate(pathForKey(key));
 
   useEffect(() => {
     savePrimaryField(primaryField);
   }, [primaryField]);
 
   const content = (
-    <>
-      {view === 'dictionary' && (
-        <DictionaryView
-          words={words}
-          onUpdate={updateWord}
-          onDelete={deleteWord}
-          onNavigate={setView}
-          primaryField={primaryField}
-        />
-      )}
-      {view === 'add' && <AddCardView onAdd={addWord} />}
-      {view === 'training' && (
-        <TrainingView
-          words={words}
-          primaryField={primaryField}
-          onMarkKnown={incrementKnownCount}
-        />
-      )}
-      {view === 'exportImport' && <ExportImportView words={words} onImport={importWords} />}
-      {view === 'missingTranslation' && (
-        <DictionaryView
-          words={words.filter((w) => !w.translation.trim())}
-          onUpdate={updateWord}
-          onDelete={deleteWord}
-          onNavigate={setView}
-          primaryField={primaryField}
-          missingTranslationOnly
-        />
-      )}
-    </>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <DictionaryView
+            words={words}
+            onUpdate={updateWord}
+            onDelete={deleteWord}
+            onNavigate={navigateTo}
+            primaryField={primaryField}
+          />
+        }
+      />
+      <Route path="/add" element={<AddCardView onAdd={addWord} />} />
+      <Route
+        path="/training"
+        element={
+          <TrainingView
+            words={words}
+            primaryField={primaryField}
+            onMarkKnown={incrementKnownCount}
+          />
+        }
+      />
+      <Route
+        path="/export-import"
+        element={<ExportImportView words={words} onImport={importWords} />}
+      />
+      <Route
+        path="/missing-translation"
+        element={
+          <DictionaryView
+            words={words.filter((w) => !w.translation.trim())}
+            onUpdate={updateWord}
+            onDelete={deleteWord}
+            onNavigate={navigateTo}
+            primaryField={primaryField}
+            missingTranslationOnly
+          />
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 
   return (
@@ -117,8 +143,8 @@ export default function App() {
             {NAV_ITEMS.map((item) => (
               <ListItemButton
                 key={item.key}
-                selected={view === item.key}
-                onClick={() => setView(item.key)}
+                selected={location.pathname === item.path}
+                onClick={() => navigate(item.path)}
                 sx={{ borderRadius: 2, mb: 0.5 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
@@ -148,7 +174,7 @@ export default function App() {
             <Toolbar variant="dense">
               <MenuBookIcon sx={{ mr: 1 }} />
               <Typography variant="h6" fontWeight={700} sx={{ flex: 1, minWidth: 0 }} noWrap>
-                {NAV_ITEMS.find((i) => i.key === view)?.label ?? strings.app.title}
+                {currentItem?.label ?? strings.app.title}
               </Typography>
               <LanguageToggle
                 value={primaryField}
@@ -176,8 +202,8 @@ export default function App() {
             <Divider />
             <BottomNavigation
               showLabels
-              value={view}
-              onChange={(_, newValue) => setView(newValue)}
+              value={location.pathname}
+              onChange={(_, newValue) => navigate(newValue)}
               sx={{
                 '& .MuiBottomNavigationAction-root': {
                   minWidth: 0,
@@ -193,7 +219,7 @@ export default function App() {
                 <BottomNavigationAction
                   key={item.key}
                   label={item.label}
-                  value={item.key}
+                  value={item.path}
                   icon={item.icon}
                 />
               ))}
