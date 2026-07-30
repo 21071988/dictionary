@@ -1,4 +1,4 @@
->import { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import strings from '../strings.json';
