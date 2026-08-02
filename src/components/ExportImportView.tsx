@@ -3,12 +3,12 @@ import { Alert, Box, Button, Paper, Snackbar, Stack, Typography } from '@mui/mat
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import type { WordCard } from '../types';
-import { downloadWordsAsJson, parseImportedWords } from '../importExport';
+import { downloadWordsAsJson, parseImportedWords, type ImportedCard } from '../importExport';
 import strings from '../strings.json';
 
 interface ExportImportViewProps {
   words: WordCard[];
-  onImport: (incoming: WordCard[]) => { added: number; updated: number };
+  onImport: (incoming: ImportedCard[]) => Promise<{ added: number; updated: number }>;
 }
 
 export function ExportImportView({ words, onImport }: ExportImportViewProps) {
@@ -32,7 +32,7 @@ export function ExportImportView({ words, onImport }: ExportImportViewProps) {
     try {
       const text = await file.text();
       const incoming = parseImportedWords(text);
-      const { added, updated } = onImport(incoming);
+      const { added, updated } = await onImport(incoming);
       setFeedback({
         severity: 'success',
         message: `${strings.dictionary.importSuccess}: ${strings.dictionary.addedLabel} ${added}, ${strings.dictionary.updatedLabel} ${updated}`,

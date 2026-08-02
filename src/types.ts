@@ -1,5 +1,5 @@
 export interface WordCard {
-  id: string;
+  id: number;
   word: string;
   translation: string;
   transcription: string;
@@ -14,7 +14,9 @@ export type ViewKey =
   | 'add'
   | 'training'
   | 'exportImport'
-  | 'missingTranslation';
+  | 'missingTranslation'
+  | 'progress'
+  | 'friends';
 
 export const WELL_KNOWN_THRESHOLD = 3;
 

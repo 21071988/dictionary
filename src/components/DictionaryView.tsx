@@ -26,8 +26,8 @@ import strings from '../strings.json';
 
 interface DictionaryViewProps {
   words: WordCard[];
-  onUpdate: (id: string, input: WordCardInput) => void;
-  onDelete: (id: string) => void;
+  onUpdate: (id: number, input: WordCardInput) => void;
+  onDelete: (id: number) => void;
   onNavigate: (view: ViewKey) => void;
   primaryField: PrimaryField;
   missingTranslationOnly?: boolean;
