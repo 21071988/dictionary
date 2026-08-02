@@ -24,7 +24,8 @@ import strings from '../strings.json';
 interface TrainingViewProps {
   words: WordCard[];
   primaryField: PrimaryField;
-  onMarkKnown: (id: string) => void;
+  onMarkKnown: (id: number) => void;
+  onRecordAnswer: (known: boolean) => void;
 }
 
 const WELL_KNOWN_WEIGHT = 0.3;
@@ -41,7 +42,12 @@ function weightedShuffle(cards: WordCard[]): WordCard[] {
 
 type Stage = 'setup' | 'session' | 'done';
 
-export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewProps) {
+export function TrainingView({
+  words,
+  primaryField,
+  onMarkKnown,
+  onRecordAnswer,
+}: TrainingViewProps) {
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [showAllCards, setShowAllCards] = useState(false);
@@ -73,8 +79,11 @@ export function TrainingView({ words, primaryField, onMarkKnown }: TrainingViewP
     const previousAnswer = answers[index];
     const updatedAnswers = { ...answers, [index]: isKnown };
     setAnswers(updatedAnswers);
-    if (isKnown && !previousAnswer && currentCard) {
-      onMarkKnown(currentCard.id);
+    if (previousAnswer === undefined && currentCard) {
+      onRecordAnswer(isKnown);
+      if (isKnown) {
+        onMarkKnown(currentCard.id);
+      }
     }
     if (session.every((_, i) => updatedAnswers[i])) {
       setStage('done');

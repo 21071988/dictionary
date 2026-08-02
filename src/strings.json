@@ -7,7 +7,10 @@
     "add": "Add",
     "training": "Training",
     "exportImport": "Export / Import",
-    "missingTranslation": "Missing translation"
+    "missingTranslation": "Missing translation",
+    "progress": "Progress",
+    "friends": "Friends",
+    "menu": "Menu"
   },
   "dictionary": {
     "searchPlaceholder": "Search word or translation",
@@ -70,5 +73,36 @@
   "stats": {
     "totalWords": "Total words",
     "knownWords": "Words you know"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create account",
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "signInSubmit": "Sign in",
+    "signUpSubmit": "Create account",
+    "switchToSignUp": "No account yet? Create one",
+    "switchToSignIn": "Already have an account? Sign in",
+    "or": "or",
+    "googleSignIn": "Sign in with Google",
+    "logout": "Log out",
+    "genericError": "Something went wrong. Please try again.",
+    "invalidCredentials": "Invalid login or password."
+  },
+  "progress": {
+    "title": "Progress",
+    "doneOf": "done",
+    "noData": "No training activity on this day.",
+    "today": "Today"
+  },
+  "friends": {
+    "title": "Friends",
+    "searchPlaceholder": "Friend's email",
+    "add": "Add",
+    "remove": "Remove",
+    "empty": "You haven't added any friends yet.",
+    "notFound": "No user found with that email.",
+    "backToFriends": "Back to friends"
   }
 }

@@ -1,5 +1,4 @@
-import { v4 as uuid } from 'uuid';
-import type { WordCard } from './types';
+import type { WordCard, WordCardInput } from './types';
 
 export function downloadWordsAsJson(words: WordCard[]): void {
   const blob = new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' });
@@ -13,26 +12,25 @@ export function downloadWordsAsJson(words: WordCard[]): void {
   URL.revokeObjectURL(url);
 }
 
-function normalizeCard(value: unknown): WordCard | null {
+export type ImportedCard = WordCardInput;
+
+function normalizeCard(value: unknown): ImportedCard | null {
   if (typeof value !== 'object' || value === null) return null;
   const candidate = value as Record<string, unknown>;
   if (typeof candidate.word !== 'string' || !candidate.word.trim()) return null;
   return {
-    id: typeof candidate.id === 'string' && candidate.id ? candidate.id : uuid(),
     word: candidate.word.trim(),
     translation: typeof candidate.translation === 'string' ? candidate.translation.trim() : '',
     transcription: typeof candidate.transcription === 'string' ? candidate.transcription.trim() : '',
-    createdAt: typeof candidate.createdAt === 'number' ? candidate.createdAt : Date.now(),
-    knownCount: typeof candidate.knownCount === 'number' ? candidate.knownCount : 0,
   };
 }
 
-export function parseImportedWords(raw: string): WordCard[] {
+export function parseImportedWords(raw: string): ImportedCard[] {
   const data: unknown = JSON.parse(raw);
   if (!Array.isArray(data)) {
     throw new Error('Invalid file format: expected a JSON array of cards');
   }
-  const cards: WordCard[] = [];
+  const cards: ImportedCard[] = [];
   for (const item of data) {
     const card = normalizeCard(item);
     if (card) cards.push(card);
@@ -40,23 +38,30 @@ export function parseImportedWords(raw: string): WordCard[] {
   return cards;
 }
 
-export interface MergeResult {
-  words: WordCard[];
-  added: number;
-  updated: number;
+function cardKey(word: string, translation: string): string {
+  return `${word.trim().toLocaleLowerCase()}|${translation.trim().toLocaleLowerCase()}`;
 }
 
-export function mergeWords(existing: WordCard[], incoming: WordCard[]): MergeResult {
-  const byId = new Map(existing.map((w) => [w.id, w]));
-  let added = 0;
-  let updated = 0;
+export interface ImportMergePlan {
+  toCreate: ImportedCard[];
+  toUpdate: { id: number; input: WordCardInput }[];
+}
+
+/**
+ * Imported files carry no server id, so cards are matched against the
+ * existing (server-owned) list by word+translation instead.
+ */
+export function planImportMerge(existing: WordCard[], incoming: ImportedCard[]): ImportMergePlan {
+  const byKey = new Map(existing.map((w) => [cardKey(w.word, w.translation), w]));
+  const toCreate: ImportedCard[] = [];
+  const toUpdate: { id: number; input: WordCardInput }[] = [];
   for (const card of incoming) {
-    if (byId.has(card.id)) {
-      updated++;
+    const match = byKey.get(cardKey(card.word, card.translation));
+    if (match) {
+      toUpdate.push({ id: match.id, input: card });
     } else {
-      added++;
+      toCreate.push(card);
     }
-    byId.set(card.id, card);
   }
-  return { words: Array.from(byId.values()), added, updated };
+  return { toCreate, toUpdate };
 }
