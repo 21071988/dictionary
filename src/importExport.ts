@@ -1,15 +1,39 @@
 import type { WordCard, WordCardInput } from './types';
 
-export function downloadWordsAsJson(words: WordCard[]): void {
-  const blob = new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' });
+function downloadJson(data: unknown, filenamePrefix: string): void {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `dictionary-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `${filenamePrefix}-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+export function downloadWordsAsJson(words: WordCard[]): void {
+  downloadJson(words, 'dictionary');
+}
+
+const OLD_DICTIONARY_STORAGE_KEY = 'dict-app:words';
+
+/**
+ * Pre-backend versions of the app kept the dictionary in localStorage under
+ * this key; it's no longer written but may still hold data on old devices.
+ */
+export function downloadOldDictionaryFromLocalStorage(): boolean {
+  const raw = localStorage.getItem(OLD_DICTIONARY_STORAGE_KEY);
+  if (!raw) return false;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return false;
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) return false;
+  downloadJson(parsed, 'dictionary-old');
+  return true;
 }
 
 export type ImportedCard = WordCardInput;

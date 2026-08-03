@@ -2,8 +2,14 @@ import { useRef, useState } from 'react';
 import { Alert, Box, Button, Paper, Snackbar, Stack, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import HistoryIcon from '@mui/icons-material/History';
 import type { WordCard } from '../types';
-import { downloadWordsAsJson, parseImportedWords, type ImportedCard } from '../importExport';
+import {
+  downloadOldDictionaryFromLocalStorage,
+  downloadWordsAsJson,
+  parseImportedWords,
+  type ImportedCard,
+} from '../importExport';
 import strings from '../strings.json';
 
 interface ExportImportViewProps {
@@ -19,6 +25,13 @@ export function ExportImportView({ words, onImport }: ExportImportViewProps) {
 
   const handleExport = () => {
     downloadWordsAsJson(words);
+  };
+
+  const handleGetOldDictionary = () => {
+    const found = downloadOldDictionaryFromLocalStorage();
+    if (!found) {
+      setFeedback({ severity: 'error', message: strings.exportImport.getOldDictionaryError });
+    }
   };
 
   const handleImportClick = () => {
@@ -59,6 +72,24 @@ export function ExportImportView({ words, onImport }: ExportImportViewProps) {
               onClick={handleExport}
             >
               {strings.dictionary.export}
+            </Button>
+          </Stack>
+        </Paper>
+
+        <Paper variant="outlined" sx={{ p: 3 }}>
+          <Stack spacing={1.5} alignItems="flex-start">
+            <Typography variant="h6" fontWeight={700}>
+              {strings.exportImport.getOldDictionary}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {strings.exportImport.getOldDictionaryDescription}
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<HistoryIcon />}
+              onClick={handleGetOldDictionary}
+            >
+              {strings.exportImport.getOldDictionary}
             </Button>
           </Stack>
         </Paper>
