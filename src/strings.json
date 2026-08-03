@@ -35,7 +35,10 @@
   },
   "exportImport": {
     "exportDescription": "Download all your cards as a JSON file.",
-    "importDescription": "Load cards from a previously exported JSON file."
+    "importDescription": "Load cards from a previously exported JSON file.",
+    "getOldDictionary": "Get old dictionary",
+    "getOldDictionaryDescription": "Download the dictionary saved in this browser's local storage from before the app used an account-based backend.",
+    "getOldDictionaryError": "No old dictionary found in this browser's local storage."
   },
   "form": {
     "word": "Word",
