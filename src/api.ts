@@ -39,6 +39,13 @@ export interface Friend {
   name: string;
 }
 
+export interface FriendRequest {
+  id: number;
+  status: 'pending' | 'approved' | 'removed';
+  created_at: string;
+  user: Friend;
+}
+
 async function parseErrorMessage(res: Response): Promise<string> {
   try {
     const data: unknown = await res.json();

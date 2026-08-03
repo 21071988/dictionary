@@ -98,11 +98,21 @@
   },
   "friends": {
     "title": "Friends",
-    "searchPlaceholder": "Friend's email",
+    "searchPlaceholder": "Search by name or email",
     "add": "Add",
     "remove": "Remove",
     "empty": "You haven't added any friends yet.",
-    "notFound": "No user found with that email.",
-    "backToFriends": "Back to friends"
+    "notFound": "No matching users found.",
+    "backToFriends": "Back to friends",
+    "requestSent": "Friend request sent",
+    "waitingApproval": "Waiting approval",
+    "sentRequests": "Sent requests",
+    "approve": "Approve",
+    "reject": "Reject",
+    "cancelRequest": "Cancel request",
+    "requestNoticeTitle": "New friend request",
+    "requestNoticeBody": "You have new friend requests waiting for approval.",
+    "viewRequests": "View",
+    "dismiss": "Dismiss"
   }
 }
