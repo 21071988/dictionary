@@ -5,6 +5,11 @@ import {
   Box,
   BottomNavigation,
   BottomNavigationAction,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Drawer,
   IconButton,
@@ -28,6 +33,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useWords } from './hooks/useWords';
 import { useProgress } from './hooks/useProgress';
+import { useFriends } from './hooks/useFriends';
 import { DictionaryView } from './components/DictionaryView';
 import { AddCardView } from './components/AddCardView';
 import { TrainingView } from './components/TrainingView';
@@ -78,6 +84,8 @@ export default function App() {
   const { user, logout } = useAuth();
   const { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount } = useWords();
   const { recordAnswer } = useProgress();
+  const { listIncomingRequests } = useFriends();
+  const [requestNoticeOpen, setRequestNoticeOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
@@ -86,6 +94,13 @@ export default function App() {
   useEffect(() => {
     savePrimaryField(primaryField);
   }, [primaryField]);
+
+  useEffect(() => {
+    if (!user) return;
+    listIncomingRequests()
+      .then((requests) => setRequestNoticeOpen(requests.length > 0))
+      .catch(() => {});
+  }, [user, listIncomingRequests]);
 
   if (!user) {
     return <AuthView />;
@@ -303,6 +318,25 @@ export default function App() {
           </Paper>
         )}
       </Box>
+
+      <Dialog open={requestNoticeOpen} onClose={() => setRequestNoticeOpen(false)}>
+        <DialogTitle>{strings.friends.requestNoticeTitle}</DialogTitle>
+        <DialogContent>
+          <Typography>{strings.friends.requestNoticeBody}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRequestNoticeOpen(false)}>{strings.friends.dismiss}</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setRequestNoticeOpen(false);
+              navigate('/friends');
+            }}
+          >
+            {strings.friends.viewRequests}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
