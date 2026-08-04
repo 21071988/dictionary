@@ -90,8 +90,9 @@ export function TrainingView({
       return;
     }
     const remaining = session.map((_, i) => i).filter((i) => showAllCards || !updatedAnswers[i]);
-    const pos = remaining.indexOf(index);
-    setIndex(remaining[pos === -1 ? 0 : (pos + 1) % remaining.length]);
+    const pos = visibleIndices.indexOf(index);
+    const nextPos = remaining.includes(index) ? pos + 1 : pos;
+    setIndex(remaining[((nextPos % remaining.length) + remaining.length) % remaining.length]);
     setFlipped(false);
   };
 
@@ -261,7 +262,7 @@ export function TrainingView({
 
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2, pb: 1 }}>
         <Button
-          variant={answers[index] === false ? 'contained' : 'outlined'}
+          variant={!answers[index] ? 'contained' : 'outlined'}
           color="error"
           startIcon={<CancelIcon />}
           onClick={() => handleAnswer(false)}
@@ -269,7 +270,7 @@ export function TrainingView({
           {strings.training.dontKnow}
         </Button>
         <Button
-          variant={answers[index] === true ? 'contained' : 'outlined'}
+          variant={answers[index] ? 'contained' : 'outlined'}
           color="success"
           startIcon={<CheckCircleIcon />}
           onClick={() => handleAnswer(true)}
