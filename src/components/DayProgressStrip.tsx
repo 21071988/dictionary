@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Box, ButtonBase, Paper, Stack, Typography } from '@mui/material';
 import type { DayStat } from '../api';
 import strings from '../strings.json';
@@ -31,6 +32,11 @@ function ratioColor(done: number, total: number): string {
 export function DayProgressStrip({ stats, selectedDate, onSelectDate }: DayProgressStripProps) {
   const selected = stats.find((s) => s.date === selectedDate);
   const today = todayIso();
+  const todayRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    todayRef.current?.scrollIntoView({ block: 'nearest', inline: 'end' });
+  }, [stats]);
 
   return (
     <Box>
@@ -41,6 +47,7 @@ export function DayProgressStrip({ stats, selectedDate, onSelectDate }: DayProgr
           return (
             <ButtonBase
               key={stat.date}
+              ref={stat.date === today ? todayRef : undefined}
               onClick={() => onSelectDate(stat.date)}
               title={`${stat.date} — ${stat.done}/${stat.total}`}
               sx={{
