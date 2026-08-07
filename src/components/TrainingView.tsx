@@ -17,9 +17,9 @@ import SchoolIcon from '@mui/icons-material/School';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { PrimaryField, WordCard } from '../types';
-import { WELL_KNOWN_THRESHOLD } from '../types';
+import { useProfile } from '../profile/ProfileContext';
 import { Flashcard } from './Flashcard';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface TrainingViewProps {
   words: WordCard[];
@@ -30,10 +30,10 @@ interface TrainingViewProps {
 
 const WELL_KNOWN_WEIGHT = 0.3;
 
-function weightedShuffle(cards: WordCard[]): WordCard[] {
+function weightedShuffle(cards: WordCard[], knownThreshold: number): WordCard[] {
   return cards
     .map((card) => {
-      const weight = card.knownCount >= WELL_KNOWN_THRESHOLD ? WELL_KNOWN_WEIGHT : 1;
+      const weight = card.knownCount >= knownThreshold ? WELL_KNOWN_WEIGHT : 1;
       return { card, key: Math.random() ** (1 / weight) };
     })
     .sort((a, b) => b.key - a.key)
@@ -48,13 +48,15 @@ export function TrainingView({
   onMarkKnown,
   onRecordAnswer,
 }: TrainingViewProps) {
+  const strings = useStrings();
+  const { profile } = useProfile();
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [showAllCards, setShowAllCards] = useState(false);
   const [session, setSession] = useState<WordCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [answers, setAnswers] = useState<Record<number, boolean>>({});
+  const [answers, setAnswers] = useState<Partial<Record<number, boolean>>>({});
   const touchStartX = useRef<number | null>(null);
 
   const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
@@ -67,7 +69,7 @@ export function TrainingView({
   const visiblePos = visibleIndices.indexOf(index);
 
   const startSession = () => {
-    const picked = weightedShuffle(words).slice(0, count);
+    const picked = weightedShuffle(words, profile.knownThreshold).slice(0, count);
     setSession(picked);
     setIndex(0);
     setFlipped(false);
@@ -262,7 +264,7 @@ export function TrainingView({
 
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2, pb: 1 }}>
         <Button
-          variant={!answers[index] ? 'contained' : 'outlined'}
+          variant={answers[index] === false ? 'contained' : 'outlined'}
           color="error"
           startIcon={<CancelIcon />}
           onClick={() => handleAnswer(false)}
@@ -270,7 +272,7 @@ export function TrainingView({
           {strings.training.dontKnow}
         </Button>
         <Button
-          variant={answers[index] ? 'contained' : 'outlined'}
+          variant={answers[index] === true ? 'contained' : 'outlined'}
           color="success"
           startIcon={<CheckCircleIcon />}
           onClick={() => handleAnswer(true)}

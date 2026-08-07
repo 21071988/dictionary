@@ -10,6 +10,7 @@
     "missingTranslation": "Missing translation",
     "progress": "Progress",
     "friends": "Friends",
+    "profile": "Profile",
     "menu": "Menu"
   },
   "dictionary": {
@@ -91,7 +92,18 @@
     "googleSignIn": "Sign in with Google",
     "logout": "Log out",
     "genericError": "Something went wrong. Please try again.",
-    "invalidCredentials": "Invalid login or password."
+    "invalidCredentials": "Invalid login or password.",
+    "forgotPassword": "Forgot password?",
+    "resetRequestTitle": "Reset password",
+    "resetRequestDescription": "Enter your account email and we'll send you a reset link.",
+    "resetRequestSubmit": "Send reset link",
+    "resetRequestSent": "If that email is registered, a reset link has been sent.",
+    "resetConfirmTitle": "Set a new password",
+    "newPassword": "New password",
+    "resetConfirmSubmit": "Update password",
+    "resetConfirmSuccess": "Password updated. You can now sign in.",
+    "resetInvalidLink": "This reset link is invalid or has expired.",
+    "backToSignIn": "Back to sign in"
   },
   "progress": {
     "title": "Progress",
@@ -117,5 +129,27 @@
     "requestNoticeBody": "You have new friend requests waiting for approval.",
     "viewRequests": "View",
     "dismiss": "Dismiss"
+  },
+  "profile": {
+    "title": "Profile",
+    "learningLanguage": "Learning language",
+    "appLanguage": "App language",
+    "knownThreshold": "Reviews to mark a word as known well",
+    "knownThresholdHelp": "Words need this many correct reviews before they count as \"known\".",
+    "save": "Save",
+    "saved": "Saved",
+    "resetProgress": "Reset progress",
+    "resetProgressDescription": "Sets the known-well counter back to zero for every word in your current learning language. Words themselves are kept.",
+    "resetProgressConfirm": "Reset known-well progress for all your words? This can't be undone.",
+    "resetProgressSuccess": "Progress reset for {count} words.",
+    "connectDictionary": "Connect a dictionary",
+    "connectDictionaryDescription": "Pick a source dictionary and import words from it into your list.",
+    "selectDictionary": "Select dictionary",
+    "selectWords": "Select up to {count} words to import",
+    "importSelected": "Import selected",
+    "dictionaryEmpty": "This dictionary source doesn't have any words yet.",
+    "noWordsSelected": "Select at least one word.",
+    "importSuccess": "Imported {count} words.",
+    "cancel": "Cancel"
   }
 }

@@ -3,6 +3,10 @@ import {
   Alert,
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   IconButton,
   InputAdornment,
@@ -15,8 +19,8 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../auth/AuthContext';
-import { ApiError } from '../api';
-import strings from '../strings.json';
+import { ApiError, requestPasswordReset } from '../api';
+import { useStrings } from '../i18n/I18nContext';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
@@ -58,6 +62,7 @@ function loadGoogleScript(): Promise<void> {
 }
 
 function GoogleSignInButton() {
+  const strings = useStrings();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { loginWithGoogle } = useAuth();
   const [error, setError] = useState('');
@@ -101,6 +106,7 @@ function GoogleSignInButton() {
 }
 
 export function AuthView() {
+  const strings = useStrings();
   const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -109,6 +115,31 @@ export function AuthView() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { login, register } = useAuth();
+
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSubmitting, setResetSubmitting] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  const handleResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim() || resetSubmitting) return;
+    setResetSubmitting(true);
+    try {
+      await requestPasswordReset(resetEmail.trim());
+      setResetSent(true);
+    } catch {
+      setResetSent(true);
+    } finally {
+      setResetSubmitting(false);
+    }
+  };
+
+  const closeResetDialog = () => {
+    setResetOpen(false);
+    setResetEmail('');
+    setResetSent(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,6 +228,15 @@ export function AuthView() {
               },
             }}
           />
+          {mode === 'signIn' && (
+            <Button
+              size="small"
+              sx={{ alignSelf: 'flex-end', mt: -1 }}
+              onClick={() => setResetOpen(true)}
+            >
+              {strings.auth.forgotPassword}
+            </Button>
+          )}
           {error && <Alert severity="error">{error}</Alert>}
           <Button type="submit" variant="contained" size="large" disabled={submitting}>
             {mode === 'signIn' ? strings.auth.signInSubmit : strings.auth.signUpSubmit}
@@ -223,6 +263,51 @@ export function AuthView() {
           </>
         )}
       </Paper>
+
+      <Dialog open={resetOpen} onClose={closeResetDialog} fullWidth maxWidth="xs">
+        <DialogTitle>{strings.auth.resetRequestTitle}</DialogTitle>
+        <DialogContent>
+          {resetSent ? (
+            <Alert severity="success" sx={{ mt: 1 }}>
+              {strings.auth.resetRequestSent}
+            </Alert>
+          ) : (
+            <Stack
+              component="form"
+              id="reset-request-form"
+              onSubmit={handleResetSubmit}
+              spacing={2}
+              sx={{ mt: 1 }}
+            >
+              <Typography color="text.secondary">
+                {strings.auth.resetRequestDescription}
+              </Typography>
+              <TextField
+                label={strings.auth.email}
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                autoFocus
+                fullWidth
+                required
+              />
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeResetDialog}>{strings.auth.backToSignIn}</Button>
+          {!resetSent && (
+            <Button
+              type="submit"
+              form="reset-request-form"
+              variant="contained"
+              disabled={resetSubmitting}
+            >
+              {strings.auth.resetRequestSubmit}
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

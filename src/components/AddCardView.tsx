@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Box, Snackbar, Alert, Typography, Paper } from '@mui/material';
 import type { WordCardInput } from '../types';
 import { WordForm } from './WordForm';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface AddCardViewProps {
   onAdd: (input: WordCardInput) => void;
 }
 
 export function AddCardView({ onAdd }: AddCardViewProps) {
+  const strings = useStrings();
   const [snackOpen, setSnackOpen] = useState(false);
 
   return (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 import { loadCardFlipCount, saveCardFlipCount } from '../storage';
 
 const FLIP_HINT_LIMIT = 3;
@@ -23,6 +23,7 @@ export function Flashcard({
   flipped,
   onFlip,
 }: FlashcardProps) {
+  const strings = useStrings();
   const [flipCount, setFlipCount] = useState(loadCardFlipCount);
 
   const handleClick = () => {

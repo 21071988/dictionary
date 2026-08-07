@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { theme } from './theme';
 import { AuthProvider } from './auth/AuthContext';
+import { ProfileProvider } from './profile/ProfileContext';
+import { I18nProvider } from './i18n/I18nContext';
 import App from './App';
 
 createRoot(document.getElementById('root')!).render(
@@ -12,7 +14,11 @@ createRoot(document.getElementById('root')!).render(
       <CssBaseline />
       <BrowserRouter basename="/dictionary">
         <AuthProvider>
-          <App />
+          <ProfileProvider>
+            <I18nProvider>
+              <App />
+            </I18nProvider>
+          </ProfileProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
