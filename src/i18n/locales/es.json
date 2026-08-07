@@ -1,0 +1,155 @@
+{
+  "app": {
+    "title": "Diccionario"
+  },
+  "nav": {
+    "dictionary": "Diccionario",
+    "add": "Añadir",
+    "training": "Entrenamiento",
+    "exportImport": "Exportar / Importar",
+    "missingTranslation": "Sin traducción",
+    "progress": "Progreso",
+    "friends": "Amigos",
+    "profile": "Perfil",
+    "menu": "Menú"
+  },
+  "dictionary": {
+    "searchPlaceholder": "Buscar palabra o traducción",
+    "empty": "El diccionario está vacío. Añade tu primera tarjeta en la pestaña \"Añadir\".",
+    "noResults": "No se encontró nada",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "export": "Exportar",
+    "import": "Importar",
+    "addFirstWord": "Añadir primera palabra",
+    "importSuccess": "Importación completada",
+    "addedLabel": "Añadidas",
+    "updatedLabel": "Actualizadas",
+    "importError": "No se pudo importar el archivo. Comprueba el formato.",
+    "noTranslation": "Sin traducción",
+    "noMissingTranslation": "¡Todas las tarjetas tienen traducción!"
+  },
+  "header": {
+    "learning": "Aprendiendo",
+    "word": "Palabra",
+    "translation": "Traducción"
+  },
+  "exportImport": {
+    "exportDescription": "Descarga todas tus tarjetas como un archivo JSON.",
+    "importDescription": "Carga tarjetas desde un archivo JSON exportado previamente.",
+    "getOldDictionary": "Obtener diccionario antiguo",
+    "getOldDictionaryDescription": "Descarga el diccionario guardado en el almacenamiento local de este navegador de antes de que la app usara un backend con cuentas.",
+    "getOldDictionaryError": "No se encontró ningún diccionario antiguo en el almacenamiento local de este navegador."
+  },
+  "form": {
+    "word": "Palabra",
+    "translation": "Traducción",
+    "transcription": "Transcripción",
+    "transcriptionPlaceholder": "opcional"
+  },
+  "editDialog": {
+    "title": "Editar tarjeta",
+    "save": "Guardar"
+  },
+  "addCard": {
+    "title": "Nueva tarjeta",
+    "submit": "Añadir al diccionario",
+    "added": "Tarjeta añadida"
+  },
+  "training": {
+    "empty": "Añade tarjetas al diccionario para empezar a entrenar.",
+    "setupTitle": "Entrenamiento",
+    "howMany": "¿Cuántas palabras repasar?",
+    "start": "Comenzar entrenamiento",
+    "done": "¡Entrenamiento completado!",
+    "knownLabel": "Sabidas",
+    "unknownLabel": "No sabidas",
+    "outOf": "de",
+    "again": "Intentar de nuevo",
+    "progressOf": "de",
+    "dontKnow": "No lo sé",
+    "know": "Lo sé",
+    "showAllCards": "Mostrar todas las tarjetas"
+  },
+  "flashcard": {
+    "hint": "toca para ver la respuesta"
+  },
+  "stats": {
+    "totalWords": "Total de palabras",
+    "knownWords": "Palabras que sabes"
+  },
+  "auth": {
+    "signInTitle": "Iniciar sesión",
+    "signUpTitle": "Crear cuenta",
+    "login": "Usuario",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "signInSubmit": "Iniciar sesión",
+    "signUpSubmit": "Crear cuenta",
+    "switchToSignUp": "¿Aún no tienes cuenta? Crea una",
+    "switchToSignIn": "¿Ya tienes cuenta? Inicia sesión",
+    "or": "o",
+    "googleSignIn": "Iniciar sesión con Google",
+    "logout": "Cerrar sesión",
+    "genericError": "Algo salió mal. Inténtalo de nuevo.",
+    "invalidCredentials": "Usuario o contraseña incorrectos.",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetRequestTitle": "Restablecer contraseña",
+    "resetRequestDescription": "Introduce el correo de tu cuenta y te enviaremos un enlace para restablecerla.",
+    "resetRequestSubmit": "Enviar enlace",
+    "resetRequestSent": "Si ese correo está registrado, se ha enviado un enlace de restablecimiento.",
+    "resetConfirmTitle": "Establecer una nueva contraseña",
+    "newPassword": "Nueva contraseña",
+    "resetConfirmSubmit": "Actualizar contraseña",
+    "resetConfirmSuccess": "Contraseña actualizada. Ya puedes iniciar sesión.",
+    "resetInvalidLink": "Este enlace de restablecimiento no es válido o ha caducado.",
+    "backToSignIn": "Volver a iniciar sesión"
+  },
+  "progress": {
+    "title": "Progreso",
+    "doneOf": "hechas",
+    "noData": "No hay actividad de entrenamiento este día.",
+    "today": "Hoy"
+  },
+  "friends": {
+    "title": "Amigos",
+    "searchPlaceholder": "Buscar por nombre o correo",
+    "add": "Añadir",
+    "remove": "Eliminar",
+    "empty": "Aún no has añadido amigos.",
+    "notFound": "No se encontraron usuarios.",
+    "backToFriends": "Volver a amigos",
+    "requestSent": "Solicitud de amistad enviada",
+    "waitingApproval": "Esperando aprobación",
+    "sentRequests": "Solicitudes enviadas",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "cancelRequest": "Cancelar solicitud",
+    "requestNoticeTitle": "Nueva solicitud de amistad",
+    "requestNoticeBody": "Tienes nuevas solicitudes de amistad esperando aprobación.",
+    "viewRequests": "Ver",
+    "dismiss": "Descartar"
+  },
+  "profile": {
+    "title": "Perfil",
+    "learningLanguage": "Idioma que aprendes",
+    "appLanguage": "Idioma de la app",
+    "knownThreshold": "Repasos para marcar una palabra como bien sabida",
+    "knownThresholdHelp": "Las palabras necesitan este número de repasos correctos para contar como \"sabidas\".",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "resetProgress": "Restablecer progreso",
+    "resetProgressDescription": "Pone a cero el contador de \"bien sabida\" para todas las palabras de tu idioma actual. Las palabras en sí se conservan.",
+    "resetProgressConfirm": "¿Restablecer el progreso de todas tus palabras? Esta acción no se puede deshacer.",
+    "resetProgressSuccess": "Progreso restablecido para {count} palabras.",
+    "connectDictionary": "Conectar un diccionario",
+    "connectDictionaryDescription": "Elige un diccionario de origen e importa palabras de él a tu lista.",
+    "selectDictionary": "Seleccionar diccionario",
+    "selectWords": "Selecciona hasta {count} palabras para importar",
+    "importSelected": "Importar seleccionadas",
+    "dictionaryEmpty": "Este diccionario todavía no tiene palabras.",
+    "noWordsSelected": "Selecciona al menos una palabra.",
+    "importSuccess": "Se importaron {count} palabras.",
+    "cancel": "Cancelar"
+  }
+}
