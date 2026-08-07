@@ -1,0 +1,155 @@
+{
+  "app": {
+    "title": "Dictionnaire"
+  },
+  "nav": {
+    "dictionary": "Dictionnaire",
+    "add": "Ajouter",
+    "training": "Entraînement",
+    "exportImport": "Exporter / Importer",
+    "missingTranslation": "Traduction manquante",
+    "progress": "Progression",
+    "friends": "Amis",
+    "profile": "Profil",
+    "menu": "Menu"
+  },
+  "dictionary": {
+    "searchPlaceholder": "Rechercher un mot ou une traduction",
+    "empty": "Le dictionnaire est vide. Ajoutez votre première carte dans l'onglet \"Ajouter\".",
+    "noResults": "Aucun résultat",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "export": "Exporter",
+    "import": "Importer",
+    "addFirstWord": "Ajouter le premier mot",
+    "importSuccess": "Importation terminée",
+    "addedLabel": "Ajoutés",
+    "updatedLabel": "Mis à jour",
+    "importError": "Impossible d'importer le fichier. Vérifiez le format.",
+    "noTranslation": "Pas de traduction",
+    "noMissingTranslation": "Toutes les cartes ont une traduction !"
+  },
+  "header": {
+    "learning": "Apprentissage",
+    "word": "Mot",
+    "translation": "Traduction"
+  },
+  "exportImport": {
+    "exportDescription": "Téléchargez toutes vos cartes sous forme de fichier JSON.",
+    "importDescription": "Chargez des cartes à partir d'un fichier JSON précédemment exporté.",
+    "getOldDictionary": "Récupérer l'ancien dictionnaire",
+    "getOldDictionaryDescription": "Téléchargez le dictionnaire enregistré dans le stockage local de ce navigateur avant que l'application n'utilise un backend basé sur des comptes.",
+    "getOldDictionaryError": "Aucun ancien dictionnaire trouvé dans le stockage local de ce navigateur."
+  },
+  "form": {
+    "word": "Mot",
+    "translation": "Traduction",
+    "transcription": "Transcription",
+    "transcriptionPlaceholder": "facultatif"
+  },
+  "editDialog": {
+    "title": "Modifier la carte",
+    "save": "Enregistrer"
+  },
+  "addCard": {
+    "title": "Nouvelle carte",
+    "submit": "Ajouter au dictionnaire",
+    "added": "Carte ajoutée"
+  },
+  "training": {
+    "empty": "Ajoutez des cartes au dictionnaire pour commencer l'entraînement.",
+    "setupTitle": "Entraînement",
+    "howMany": "Combien de mots réviser ?",
+    "start": "Démarrer l'entraînement",
+    "done": "Entraînement terminé !",
+    "knownLabel": "Sus",
+    "unknownLabel": "Non sus",
+    "outOf": "sur",
+    "again": "Réessayer",
+    "progressOf": "sur",
+    "dontKnow": "Je ne sais pas",
+    "know": "Je sais",
+    "showAllCards": "Afficher toutes les cartes"
+  },
+  "flashcard": {
+    "hint": "touchez pour révéler la réponse"
+  },
+  "stats": {
+    "totalWords": "Total de mots",
+    "knownWords": "Mots que vous savez"
+  },
+  "auth": {
+    "signInTitle": "Se connecter",
+    "signUpTitle": "Créer un compte",
+    "login": "Identifiant",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signInSubmit": "Se connecter",
+    "signUpSubmit": "Créer un compte",
+    "switchToSignUp": "Pas encore de compte ? Créez-en un",
+    "switchToSignIn": "Vous avez déjà un compte ? Connectez-vous",
+    "or": "ou",
+    "googleSignIn": "Se connecter avec Google",
+    "logout": "Se déconnecter",
+    "genericError": "Une erreur s'est produite. Veuillez réessayer.",
+    "invalidCredentials": "Identifiant ou mot de passe invalide.",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetRequestTitle": "Réinitialiser le mot de passe",
+    "resetRequestDescription": "Entrez l'e-mail de votre compte et nous vous enverrons un lien de réinitialisation.",
+    "resetRequestSubmit": "Envoyer le lien",
+    "resetRequestSent": "Si cet e-mail est enregistré, un lien de réinitialisation a été envoyé.",
+    "resetConfirmTitle": "Définir un nouveau mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "resetConfirmSubmit": "Mettre à jour le mot de passe",
+    "resetConfirmSuccess": "Mot de passe mis à jour. Vous pouvez maintenant vous connecter.",
+    "resetInvalidLink": "Ce lien de réinitialisation est invalide ou a expiré.",
+    "backToSignIn": "Retour à la connexion"
+  },
+  "progress": {
+    "title": "Progression",
+    "doneOf": "faites",
+    "noData": "Aucune activité d'entraînement ce jour-là.",
+    "today": "Aujourd'hui"
+  },
+  "friends": {
+    "title": "Amis",
+    "searchPlaceholder": "Rechercher par nom ou e-mail",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "empty": "Vous n'avez pas encore ajouté d'amis.",
+    "notFound": "Aucun utilisateur correspondant trouvé.",
+    "backToFriends": "Retour aux amis",
+    "requestSent": "Demande d'ami envoyée",
+    "waitingApproval": "En attente d'approbation",
+    "sentRequests": "Demandes envoyées",
+    "approve": "Approuver",
+    "reject": "Refuser",
+    "cancelRequest": "Annuler la demande",
+    "requestNoticeTitle": "Nouvelle demande d'ami",
+    "requestNoticeBody": "Vous avez de nouvelles demandes d'ami en attente d'approbation.",
+    "viewRequests": "Voir",
+    "dismiss": "Ignorer"
+  },
+  "profile": {
+    "title": "Profil",
+    "learningLanguage": "Langue apprise",
+    "appLanguage": "Langue de l'application",
+    "knownThreshold": "Révisions pour marquer un mot comme bien su",
+    "knownThresholdHelp": "Les mots doivent atteindre ce nombre de révisions correctes pour compter comme \"sus\".",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "resetProgress": "Réinitialiser la progression",
+    "resetProgressDescription": "Remet à zéro le compteur \"bien su\" pour tous les mots de votre langue actuelle. Les mots eux-mêmes sont conservés.",
+    "resetProgressConfirm": "Réinitialiser la progression de tous vos mots ? Cette action est irréversible.",
+    "resetProgressSuccess": "Progression réinitialisée pour {count} mots.",
+    "connectDictionary": "Connecter un dictionnaire",
+    "connectDictionaryDescription": "Choisissez un dictionnaire source et importez-en des mots dans votre liste.",
+    "selectDictionary": "Sélectionner un dictionnaire",
+    "selectWords": "Sélectionnez jusqu'à {count} mots à importer",
+    "importSelected": "Importer la sélection",
+    "dictionaryEmpty": "Ce dictionnaire ne contient pas encore de mots.",
+    "noWordsSelected": "Sélectionnez au moins un mot.",
+    "importSuccess": "{count} mots importés.",
+    "cancel": "Annuler"
+  }
+}

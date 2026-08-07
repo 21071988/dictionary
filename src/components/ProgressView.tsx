@@ -3,7 +3,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useProgress } from '../hooks/useProgress';
 import { DayProgressStrip } from './DayProgressStrip';
 import type { DayStat } from '../api';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 const WINDOW_DAYS = 35;
 
@@ -14,6 +14,7 @@ function isoDaysAgo(days: number): string {
 }
 
 export function ProgressView() {
+  const strings = useStrings();
   const { fetchStats } = useProgress();
   const [stats, setStats] = useState<DayStat[] | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => isoDaysAgo(0));

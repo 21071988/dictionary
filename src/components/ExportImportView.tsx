@@ -10,7 +10,7 @@ import {
   parseImportedWords,
   type ImportedCard,
 } from '../importExport';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface ExportImportViewProps {
   words: WordCard[];
@@ -18,6 +18,7 @@ interface ExportImportViewProps {
 }
 
 export function ExportImportView({ words, onImport }: ExportImportViewProps) {
+  const strings = useStrings();
   const [feedback, setFeedback] = useState<
     { severity: 'success' | 'error'; message: string } | null
   >(null);

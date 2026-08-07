@@ -21,12 +21,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useFriends } from '../hooks/useFriends';
 import { useDebounce } from '../hooks/useDebounce';
 import { ApiError, type Friend, type FriendRequest } from '../api';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 const MIN_QUERY_LENGTH = 3;
 const DEBOUNCE_MS = 300;
 
 export function FriendsView() {
+  const strings = useStrings();
   const {
     listFriends,
     searchFriends,

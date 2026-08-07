@@ -6,7 +6,7 @@ import { useFriends } from '../hooks/useFriends';
 import { useProgress } from '../hooks/useProgress';
 import type { DayStat, Friend } from '../api';
 import { DayProgressStrip } from './DayProgressStrip';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 const WINDOW_DAYS = 35;
 
@@ -17,6 +17,7 @@ function isoDaysAgo(days: number): string {
 }
 
 export function FriendProgressView() {
+  const strings = useStrings();
   const { friendId } = useParams<{ friendId: string }>();
   const id = Number(friendId);
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { ToggleButton, ToggleButtonGroup, Tooltip, type SxProps, type Theme } fr
 import AbcIcon from '@mui/icons-material/Abc';
 import TranslateIcon from '@mui/icons-material/Translate';
 import type { PrimaryField } from '../types';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface LanguageToggleProps {
   value: PrimaryField;
@@ -11,6 +11,7 @@ interface LanguageToggleProps {
 }
 
 export function LanguageToggle({ value, onChange, sx }: LanguageToggleProps) {
+  const strings = useStrings();
   return (
     <ToggleButtonGroup
       size="small"
