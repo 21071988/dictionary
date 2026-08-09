@@ -93,6 +93,22 @@ export function refreshAccessToken(refresh: string): Promise<{ access: string }>
   return publicRequest<{ access: string }>('/api/auth/refresh/', { refresh });
 }
 
+export function requestPasswordReset(email: string): Promise<{ detail: string }> {
+  return publicRequest<{ detail: string }>('/api/auth/password-reset/', { email });
+}
+
+export function confirmPasswordReset(
+  uid: string,
+  token: string,
+  newPassword: string,
+): Promise<{ detail: string }> {
+  return publicRequest<{ detail: string }>('/api/auth/password-reset/confirm/', {
+    uid,
+    token,
+    new_password: newPassword,
+  });
+}
+
 export async function authorizedRequest<T>(
   path: string,
   accessToken: string,

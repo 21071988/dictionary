@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Box, ButtonBase, Paper, Stack, Typography } from '@mui/material';
 import type { DayStat } from '../api';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface DayProgressStripProps {
   stats: DayStat[];
@@ -30,9 +30,11 @@ function ratioColor(done: number, total: number): string {
 }
 
 export function DayProgressStrip({ stats, selectedDate, onSelectDate }: DayProgressStripProps) {
+  const strings = useStrings();
   const selected = stats.find((s) => s.date === selectedDate);
   const today = todayIso();
   const todayRef = useRef<HTMLButtonElement | null>(null);
+  const maxDone = Math.max(1, ...stats.map((s) => s.done));
 
   useEffect(() => {
     todayRef.current?.scrollIntoView({ block: 'nearest', inline: 'end' });
@@ -43,7 +45,7 @@ export function DayProgressStrip({ stats, selectedDate, onSelectDate }: DayProgr
       <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 1 }}>
         {stats.map((stat) => {
           const { weekday, day } = dayLabel(stat.date);
-          const fillPct = stat.total === 0 ? 0 : Math.round((stat.done / stat.total) * 100);
+          const fillPct = Math.round((stat.done / maxDone) * 100);
           return (
             <ButtonBase
               key={stat.date}
@@ -75,15 +77,29 @@ export function DayProgressStrip({ stats, selectedDate, onSelectDate }: DayProgr
                 <Box
                   sx={{
                     width: '100%',
-                    height: `${Math.max(fillPct, stat.total > 0 ? 8 : 0)}%`,
+                    height: `${Math.max(fillPct, stat.done > 0 ? 8 : 0)}%`,
                     bgcolor: ratioColor(stat.done, stat.total),
                     transition: 'height 0.2s',
                   }}
                 />
               </Box>
-              <Typography variant="caption" sx={{ mt: 0.5, fontWeight: stat.date === today ? 700 : 400 }}>
-                {day}
-              </Typography>
+              <Box
+                sx={{
+                  mt: 0.5,
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: stat.date === today ? '1.5px solid' : 'none',
+                  borderColor: 'primary.main',
+                }}
+              >
+                <Typography variant="caption" sx={{ fontWeight: stat.date === today ? 700 : 400 }}>
+                  {day}
+                </Typography>
+              </Box>
               <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem' }}>
                 {weekday}
               </Typography>

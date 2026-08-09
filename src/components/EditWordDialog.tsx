@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import type { WordCard, WordCardInput } from '../types';
 import { WordForm } from './WordForm';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface EditWordDialogProps {
   open: boolean;
@@ -11,6 +11,7 @@ interface EditWordDialogProps {
 }
 
 export function EditWordDialog({ open, card, onClose, onSave }: EditWordDialogProps) {
+  const strings = useStrings();
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>{strings.editDialog.title}</DialogTitle>

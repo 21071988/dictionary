@@ -1,0 +1,155 @@
+{
+  "app": {
+    "title": "Ordbog"
+  },
+  "nav": {
+    "dictionary": "Ordbog",
+    "add": "Tilføj",
+    "training": "Træning",
+    "exportImport": "Eksporter / Importer",
+    "missingTranslation": "Mangler oversættelse",
+    "progress": "Fremgang",
+    "friends": "Venner",
+    "profile": "Profil",
+    "menu": "Menu"
+  },
+  "dictionary": {
+    "searchPlaceholder": "Søg efter ord eller oversættelse",
+    "empty": "Ordbogen er tom. Tilføj dit første kort under fanen \"Tilføj\".",
+    "noResults": "Intet fundet",
+    "edit": "Rediger",
+    "delete": "Slet",
+    "export": "Eksporter",
+    "import": "Importer",
+    "addFirstWord": "Tilføj første ord",
+    "importSuccess": "Import fuldført",
+    "addedLabel": "Tilføjet",
+    "updatedLabel": "Opdateret",
+    "importError": "Kunne ikke importere filen. Tjek formatet.",
+    "noTranslation": "Ingen oversættelse",
+    "noMissingTranslation": "Alle kort har en oversættelse!"
+  },
+  "header": {
+    "learning": "Lærer",
+    "word": "Ord",
+    "translation": "Oversættelse"
+  },
+  "exportImport": {
+    "exportDescription": "Download alle dine kort som en JSON-fil.",
+    "importDescription": "Indlæs kort fra en tidligere eksporteret JSON-fil.",
+    "getOldDictionary": "Hent gammel ordbog",
+    "getOldDictionaryDescription": "Download ordbogen, der er gemt i denne browsers lokale lager, fra før appen brugte en kontobaseret backend.",
+    "getOldDictionaryError": "Ingen gammel ordbog fundet i denne browsers lokale lager."
+  },
+  "form": {
+    "word": "Ord",
+    "translation": "Oversættelse",
+    "transcription": "Udtale",
+    "transcriptionPlaceholder": "valgfrit"
+  },
+  "editDialog": {
+    "title": "Rediger kort",
+    "save": "Gem"
+  },
+  "addCard": {
+    "title": "Nyt kort",
+    "submit": "Tilføj til ordbog",
+    "added": "Kort tilføjet"
+  },
+  "training": {
+    "empty": "Tilføj kort til ordbogen for at begynde træningen.",
+    "setupTitle": "Træning",
+    "howMany": "Hvor mange ord skal gennemgås?",
+    "start": "Start træning",
+    "done": "Træning fuldført!",
+    "knownLabel": "Kendte",
+    "unknownLabel": "Ukendte",
+    "outOf": "ud af",
+    "again": "Prøv igen",
+    "progressOf": "af",
+    "dontKnow": "Ved ikke",
+    "know": "Ved",
+    "showAllCards": "Vis alle kort"
+  },
+  "flashcard": {
+    "hint": "tryk for at se svaret"
+  },
+  "stats": {
+    "totalWords": "Ord i alt",
+    "knownWords": "Ord du kan"
+  },
+  "auth": {
+    "signInTitle": "Log ind",
+    "signUpTitle": "Opret konto",
+    "login": "Brugernavn",
+    "email": "E-mail",
+    "password": "Adgangskode",
+    "signInSubmit": "Log ind",
+    "signUpSubmit": "Opret konto",
+    "switchToSignUp": "Ingen konto endnu? Opret en",
+    "switchToSignIn": "Har du allerede en konto? Log ind",
+    "or": "eller",
+    "googleSignIn": "Log ind med Google",
+    "logout": "Log ud",
+    "genericError": "Noget gik galt. Prøv igen.",
+    "invalidCredentials": "Forkert brugernavn eller adgangskode.",
+    "forgotPassword": "Glemt adgangskode?",
+    "resetRequestTitle": "Nulstil adgangskode",
+    "resetRequestDescription": "Indtast din kontos e-mail, så sender vi dig et link til nulstilling.",
+    "resetRequestSubmit": "Send nulstillingslink",
+    "resetRequestSent": "Hvis den e-mail er registreret, er der sendt et nulstillingslink.",
+    "resetConfirmTitle": "Vælg en ny adgangskode",
+    "newPassword": "Ny adgangskode",
+    "resetConfirmSubmit": "Opdater adgangskode",
+    "resetConfirmSuccess": "Adgangskoden er opdateret. Du kan nu logge ind.",
+    "resetInvalidLink": "Dette nulstillingslink er ugyldigt eller udløbet.",
+    "backToSignIn": "Tilbage til login"
+  },
+  "progress": {
+    "title": "Fremgang",
+    "doneOf": "gennemført",
+    "noData": "Ingen træningsaktivitet denne dag.",
+    "today": "I dag"
+  },
+  "friends": {
+    "title": "Venner",
+    "searchPlaceholder": "Søg efter navn eller e-mail",
+    "add": "Tilføj",
+    "remove": "Fjern",
+    "empty": "Du har endnu ikke tilføjet nogen venner.",
+    "notFound": "Ingen matchende brugere fundet.",
+    "backToFriends": "Tilbage til venner",
+    "requestSent": "Venneanmodning sendt",
+    "waitingApproval": "Afventer godkendelse",
+    "sentRequests": "Sendte anmodninger",
+    "approve": "Godkend",
+    "reject": "Afvis",
+    "cancelRequest": "Annuller anmodning",
+    "requestNoticeTitle": "Ny venneanmodning",
+    "requestNoticeBody": "Du har nye venneanmodninger, der venter på godkendelse.",
+    "viewRequests": "Vis",
+    "dismiss": "Afvis"
+  },
+  "profile": {
+    "title": "Profil",
+    "learningLanguage": "Sprog du lærer",
+    "appLanguage": "Appens sprog",
+    "knownThreshold": "Gennemgange før et ord er godt kendt",
+    "knownThresholdHelp": "Ord skal gennemgås korrekt så mange gange, før de tæller som \"kendt\".",
+    "save": "Gem",
+    "saved": "Gemt",
+    "resetProgress": "Nulstil fremgang",
+    "resetProgressDescription": "Nulstiller \"godt kendt\"-tælleren for alle ord i dit nuværende sprog. Selve ordene beholdes.",
+    "resetProgressConfirm": "Nulstil fremgangen for alle dine ord? Dette kan ikke fortrydes.",
+    "resetProgressSuccess": "Fremgang nulstillet for {count} ord.",
+    "connectDictionary": "Tilslut en ordbog",
+    "connectDictionaryDescription": "Vælg en kildeordbog, og importer ord fra den til din liste.",
+    "selectDictionary": "Vælg ordbog",
+    "selectWords": "Vælg op til {count} ord, der skal importeres",
+    "importSelected": "Importer valgte",
+    "dictionaryEmpty": "Denne ordbog har endnu ingen ord.",
+    "noWordsSelected": "Vælg mindst ét ord.",
+    "importSuccess": "{count} ord importeret.",
+    "cancel": "Annuller"
+  }
+}

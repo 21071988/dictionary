@@ -22,7 +22,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import type { PrimaryField, ViewKey, WordCard, WordCardInput } from '../types';
 import { EditWordDialog } from './EditWordDialog';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface DictionaryViewProps {
   words: WordCard[];
@@ -46,6 +46,7 @@ export function DictionaryView({
   primaryField,
   missingTranslationOnly = false,
 }: DictionaryViewProps) {
+  const strings = useStrings();
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<WordCard | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);

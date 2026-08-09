@@ -1,0 +1,155 @@
+{
+  "app": {
+    "title": "Dizionario"
+  },
+  "nav": {
+    "dictionary": "Dizionario",
+    "add": "Aggiungi",
+    "training": "Allenamento",
+    "exportImport": "Esporta / Importa",
+    "missingTranslation": "Traduzione mancante",
+    "progress": "Progressi",
+    "friends": "Amici",
+    "profile": "Profilo",
+    "menu": "Menu"
+  },
+  "dictionary": {
+    "searchPlaceholder": "Cerca parola o traduzione",
+    "empty": "Il dizionario è vuoto. Aggiungi la tua prima scheda nella scheda \"Aggiungi\".",
+    "noResults": "Nessun risultato",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "export": "Esporta",
+    "import": "Importa",
+    "addFirstWord": "Aggiungi la prima parola",
+    "importSuccess": "Importazione completata",
+    "addedLabel": "Aggiunte",
+    "updatedLabel": "Aggiornate",
+    "importError": "Impossibile importare il file. Controlla il formato.",
+    "noTranslation": "Nessuna traduzione",
+    "noMissingTranslation": "Tutte le schede hanno una traduzione!"
+  },
+  "header": {
+    "learning": "Sto imparando",
+    "word": "Parola",
+    "translation": "Traduzione"
+  },
+  "exportImport": {
+    "exportDescription": "Scarica tutte le tue schede come file JSON.",
+    "importDescription": "Carica schede da un file JSON esportato in precedenza.",
+    "getOldDictionary": "Recupera vecchio dizionario",
+    "getOldDictionaryDescription": "Scarica il dizionario salvato nell'archiviazione locale di questo browser prima che l'app usasse un backend con account.",
+    "getOldDictionaryError": "Nessun vecchio dizionario trovato nell'archiviazione locale di questo browser."
+  },
+  "form": {
+    "word": "Parola",
+    "translation": "Traduzione",
+    "transcription": "Trascrizione",
+    "transcriptionPlaceholder": "facoltativo"
+  },
+  "editDialog": {
+    "title": "Modifica scheda",
+    "save": "Salva"
+  },
+  "addCard": {
+    "title": "Nuova scheda",
+    "submit": "Aggiungi al dizionario",
+    "added": "Scheda aggiunta"
+  },
+  "training": {
+    "empty": "Aggiungi schede al dizionario per iniziare ad allenarti.",
+    "setupTitle": "Allenamento",
+    "howMany": "Quante parole vuoi ripassare?",
+    "start": "Inizia allenamento",
+    "done": "Allenamento completato!",
+    "knownLabel": "Sapute",
+    "unknownLabel": "Non sapute",
+    "outOf": "su",
+    "again": "Riprova",
+    "progressOf": "di",
+    "dontKnow": "Non lo so",
+    "know": "Lo so",
+    "showAllCards": "Mostra tutte le schede"
+  },
+  "flashcard": {
+    "hint": "tocca per rivelare la risposta"
+  },
+  "stats": {
+    "totalWords": "Parole totali",
+    "knownWords": "Parole che sai"
+  },
+  "auth": {
+    "signInTitle": "Accedi",
+    "signUpTitle": "Crea account",
+    "login": "Nome utente",
+    "email": "Email",
+    "password": "Password",
+    "signInSubmit": "Accedi",
+    "signUpSubmit": "Crea account",
+    "switchToSignUp": "Non hai un account? Creane uno",
+    "switchToSignIn": "Hai già un account? Accedi",
+    "or": "oppure",
+    "googleSignIn": "Accedi con Google",
+    "logout": "Esci",
+    "genericError": "Qualcosa è andato storto. Riprova.",
+    "invalidCredentials": "Nome utente o password non validi.",
+    "forgotPassword": "Password dimenticata?",
+    "resetRequestTitle": "Reimposta password",
+    "resetRequestDescription": "Inserisci l'email del tuo account e ti invieremo un link per reimpostarla.",
+    "resetRequestSubmit": "Invia link di reimpostazione",
+    "resetRequestSent": "Se quell'email è registrata, è stato inviato un link di reimpostazione.",
+    "resetConfirmTitle": "Imposta una nuova password",
+    "newPassword": "Nuova password",
+    "resetConfirmSubmit": "Aggiorna password",
+    "resetConfirmSuccess": "Password aggiornata. Ora puoi accedere.",
+    "resetInvalidLink": "Questo link di reimpostazione non è valido o è scaduto.",
+    "backToSignIn": "Torna al login"
+  },
+  "progress": {
+    "title": "Progressi",
+    "doneOf": "fatte",
+    "noData": "Nessuna attività di allenamento in questo giorno.",
+    "today": "Oggi"
+  },
+  "friends": {
+    "title": "Amici",
+    "searchPlaceholder": "Cerca per nome o email",
+    "add": "Aggiungi",
+    "remove": "Rimuovi",
+    "empty": "Non hai ancora aggiunto amici.",
+    "notFound": "Nessun utente trovato.",
+    "backToFriends": "Torna agli amici",
+    "requestSent": "Richiesta di amicizia inviata",
+    "waitingApproval": "In attesa di approvazione",
+    "sentRequests": "Richieste inviate",
+    "approve": "Approva",
+    "reject": "Rifiuta",
+    "cancelRequest": "Annulla richiesta",
+    "requestNoticeTitle": "Nuova richiesta di amicizia",
+    "requestNoticeBody": "Hai nuove richieste di amicizia in attesa di approvazione.",
+    "viewRequests": "Visualizza",
+    "dismiss": "Ignora"
+  },
+  "profile": {
+    "title": "Profilo",
+    "learningLanguage": "Lingua che stai imparando",
+    "appLanguage": "Lingua dell'app",
+    "knownThreshold": "Ripassi necessari per segnare una parola come ben saputa",
+    "knownThresholdHelp": "Le parole richiedono questo numero di ripassi corretti prima di contare come \"sapute\".",
+    "save": "Salva",
+    "saved": "Salvato",
+    "resetProgress": "Ripristina progressi",
+    "resetProgressDescription": "Azzera il contatore \"ben saputa\" per tutte le parole della tua lingua attuale. Le parole stesse vengono conservate.",
+    "resetProgressConfirm": "Ripristinare i progressi di tutte le tue parole? Questa azione non può essere annullata.",
+    "resetProgressSuccess": "Progressi ripristinati per {count} parole.",
+    "connectDictionary": "Collega un dizionario",
+    "connectDictionaryDescription": "Scegli un dizionario sorgente e importa parole da esso nella tua lista.",
+    "selectDictionary": "Seleziona dizionario",
+    "selectWords": "Seleziona fino a {count} parole da importare",
+    "importSelected": "Importa selezionate",
+    "dictionaryEmpty": "Questo dizionario non ha ancora parole.",
+    "noWordsSelected": "Seleziona almeno una parola.",
+    "importSuccess": "Importate {count} parole.",
+    "cancel": "Annulla"
+  }
+}

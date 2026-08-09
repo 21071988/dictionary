@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -31,6 +31,7 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PeopleIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import { useWords } from './hooks/useWords';
 import { useProgress } from './hooks/useProgress';
 import { useFriends } from './hooks/useFriends';
@@ -41,43 +42,20 @@ import { ExportImportView } from './components/ExportImportView';
 import { ProgressView } from './components/ProgressView';
 import { FriendsView } from './components/FriendsView';
 import { FriendProgressView } from './components/FriendProgressView';
+import { ProfileView } from './components/ProfileView';
 import { StatsBar } from './components/StatsBar';
 import { LanguageToggle } from './components/LanguageToggle';
 import { AuthView } from './components/AuthView';
+import { ResetPasswordView } from './components/ResetPasswordView';
 import { useAuth } from './auth/AuthContext';
+import { useStrings } from './i18n/I18nContext';
 import { loadPrimaryField, savePrimaryField } from './storage';
 import type { PrimaryField, ViewKey } from './types';
-import strings from './strings.json';
-
-const NAV_ITEMS: { key: ViewKey; path: string; label: string; icon: React.ReactElement }[] = [
-  { key: 'dictionary', path: '/', label: strings.nav.dictionary, icon: <MenuBookIcon /> },
-  { key: 'add', path: '/add', label: strings.nav.add, icon: <AddCircleIcon /> },
-  { key: 'training', path: '/training', label: strings.nav.training, icon: <SchoolIcon /> },
-  {
-    key: 'exportImport',
-    path: '/export-import',
-    label: strings.nav.exportImport,
-    icon: <ImportExportIcon />,
-  },
-  {
-    key: 'missingTranslation',
-    path: '/missing-translation',
-    label: strings.nav.missingTranslation,
-    icon: <ReportProblemIcon />,
-  },
-  { key: 'progress', path: '/progress', label: strings.nav.progress, icon: <CalendarMonthIcon /> },
-  { key: 'friends', path: '/friends', label: strings.nav.friends, icon: <PeopleIcon /> },
-];
-
-const pathForKey = (key: ViewKey): string =>
-  NAV_ITEMS.find((item) => item.key === key)?.path ?? '/';
-
-const MOBILE_BOTTOM_KEYS = new Set<ViewKey>(['dictionary', 'add', 'training']);
-const MOBILE_BOTTOM_ITEMS = NAV_ITEMS.filter((item) => MOBILE_BOTTOM_KEYS.has(item.key));
 
 const DRAWER_WIDTH = 220;
 
 export default function App() {
+  const strings = useStrings();
   const [primaryField, setPrimaryField] = useState<PrimaryField>(() => loadPrimaryField());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDesktop = useMediaQuery('(min-width:900px)');
@@ -88,6 +66,41 @@ export default function App() {
   const [requestNoticeOpen, setRequestNoticeOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const NAV_ITEMS = useMemo<
+    { key: ViewKey; path: string; label: string; icon: React.ReactElement }[]
+  >(
+    () => [
+      { key: 'dictionary', path: '/', label: strings.nav.dictionary, icon: <MenuBookIcon /> },
+      { key: 'add', path: '/add', label: strings.nav.add, icon: <AddCircleIcon /> },
+      { key: 'training', path: '/training', label: strings.nav.training, icon: <SchoolIcon /> },
+      {
+        key: 'exportImport',
+        path: '/export-import',
+        label: strings.nav.exportImport,
+        icon: <ImportExportIcon />,
+      },
+      {
+        key: 'missingTranslation',
+        path: '/missing-translation',
+        label: strings.nav.missingTranslation,
+        icon: <ReportProblemIcon />,
+      },
+      {
+        key: 'progress',
+        path: '/progress',
+        label: strings.nav.progress,
+        icon: <CalendarMonthIcon />,
+      },
+      { key: 'friends', path: '/friends', label: strings.nav.friends, icon: <PeopleIcon /> },
+      { key: 'profile', path: '/profile', label: strings.nav.profile, icon: <PersonIcon /> },
+    ],
+    [strings],
+  );
+  const pathForKey = (key: ViewKey): string =>
+    NAV_ITEMS.find((item) => item.key === key)?.path ?? '/';
+  const MOBILE_BOTTOM_KEYS = new Set<ViewKey>(['dictionary', 'add', 'training']);
+  const MOBILE_BOTTOM_ITEMS = NAV_ITEMS.filter((item) => MOBILE_BOTTOM_KEYS.has(item.key));
   const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
   const navigateTo = (key: ViewKey) => navigate(pathForKey(key));
 
@@ -101,6 +114,10 @@ export default function App() {
       .then((requests) => setRequestNoticeOpen(requests.length > 0))
       .catch(() => {});
   }, [user, listIncomingRequests]);
+
+  if (location.pathname === '/reset-password') {
+    return <ResetPasswordView />;
+  }
 
   if (!user) {
     return <AuthView />;
@@ -152,6 +169,7 @@ export default function App() {
       <Route path="/progress" element={<ProgressView />} />
       <Route path="/friends" element={<FriendsView />} />
       <Route path="/friends/:friendId" element={<FriendProgressView />} />
+      <Route path="/profile" element={<ProfileView onImportWord={addWord} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

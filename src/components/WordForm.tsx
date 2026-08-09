@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stack, TextField, Button } from '@mui/material';
 import type { WordCard, WordCardInput } from '../types';
-import strings from '../strings.json';
+import { useStrings } from '../i18n/I18nContext';
 
 interface WordFormProps {
   initial?: WordCard | null;
@@ -11,6 +11,7 @@ interface WordFormProps {
 }
 
 export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: WordFormProps) {
+  const strings = useStrings();
   const [word, setWord] = useState(initial?.word ?? '');
   const [translation, setTranslation] = useState(initial?.translation ?? '');
   const [transcription, setTranscription] = useState(initial?.transcription ?? '');
