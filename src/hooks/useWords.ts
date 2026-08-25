@@ -110,33 +110,54 @@ export function useWords() {
 
   const importWords = useCallback(
     async (incoming: ImportedCard[]): Promise<{ added: number; updated: number }> => {
-      const { toCreate, toUpdate } = planImportMerge(wordsRef.current, incoming);
+      const before = wordsRef.current;
+      const { toCreate, toUpdate } = planImportMerge(before, incoming);
 
-      const created = await Promise.all(
-        toCreate.map((card) =>
-          authFetch<WordCardDto>('/api/words/', {
-            method: 'POST',
-            body: JSON.stringify(toBody(card)),
-          }),
-        ),
-      );
-      const updated = await Promise.all(
-        toUpdate.map(({ id, input }) =>
-          authFetch<WordCardDto>(`/api/words/${id}/`, {
-            method: 'PATCH',
-            body: JSON.stringify(toBody(input)),
-          }),
-        ),
-      );
-
+      // Optimistic UI: show the imported cards immediately, before the
+      // server has responded, then reconcile with real ids once it does.
+      const now = Date.now();
+      const placeholders: WordCard[] = toCreate.map((card, i) => ({
+        id: -(now + i + 1),
+        word: card.word,
+        translation: card.translation,
+        transcription: card.transcription,
+        knownCount: 0,
+        createdAt: now,
+      }));
       setWords((prev) => {
         const byId = new Map(prev.map((w) => [w.id, w]));
-        for (const dto of created) byId.set(dto.id, fromDto(dto));
-        for (const dto of updated) byId.set(dto.id, fromDto(dto));
-        return Array.from(byId.values());
+        for (const { id, input } of toUpdate) {
+          const existing = byId.get(id);
+          if (existing) byId.set(id, { ...existing, ...input });
+        }
+        return [...byId.values(), ...placeholders];
       });
 
-      return { added: created.length, updated: updated.length };
+      try {
+        const { created, updated } = await authFetch<{ created: WordCardDto[]; updated: WordCardDto[] }>(
+          '/api/words/bulk/',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              create: toCreate.map(toBody),
+              update: toUpdate.map(({ id, input }) => ({ id, ...toBody(input) })),
+            }),
+          },
+        );
+
+        setWords((prev) => {
+          const placeholderIds = new Set(placeholders.map((w) => w.id));
+          const byId = new Map(prev.filter((w) => !placeholderIds.has(w.id)).map((w) => [w.id, w]));
+          for (const dto of created) byId.set(dto.id, fromDto(dto));
+          for (const dto of updated) byId.set(dto.id, fromDto(dto));
+          return Array.from(byId.values());
+        });
+
+        return { added: created.length, updated: updated.length };
+      } catch (err) {
+        setWords(before);
+        throw err;
+      }
     },
     [authFetch],
   );
