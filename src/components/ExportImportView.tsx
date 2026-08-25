@@ -5,7 +5,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import HistoryIcon from '@mui/icons-material/History';
 import type { WordCard } from '../types';
 import {
-  downloadOldDictionaryFromLocalStorage,
   downloadWordsAsJson,
   parseImportedWords,
   type ImportedCard,
@@ -28,12 +27,6 @@ export function ExportImportView({ words, onImport }: ExportImportViewProps) {
     downloadWordsAsJson(words);
   };
 
-  const handleGetOldDictionary = () => {
-    const found = downloadOldDictionaryFromLocalStorage();
-    if (!found) {
-      setFeedback({ severity: 'error', message: strings.exportImport.getOldDictionaryError });
-    }
-  };
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
@@ -73,24 +66,6 @@ export function ExportImportView({ words, onImport }: ExportImportViewProps) {
               onClick={handleExport}
             >
               {strings.dictionary.export}
-            </Button>
-          </Stack>
-        </Paper>
-
-        <Paper variant="outlined" sx={{ p: 3 }}>
-          <Stack spacing={1.5} alignItems="flex-start">
-            <Typography variant="h6" fontWeight={700}>
-              {strings.exportImport.getOldDictionary}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {strings.exportImport.getOldDictionaryDescription}
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<HistoryIcon />}
-              onClick={handleGetOldDictionary}
-            >
-              {strings.exportImport.getOldDictionary}
             </Button>
           </Stack>
         </Paper>

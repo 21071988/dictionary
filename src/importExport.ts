@@ -18,24 +18,6 @@ export function downloadWordsAsJson(words: WordCard[]): void {
 
 const OLD_DICTIONARY_STORAGE_KEY = 'dict-app:words';
 
-/**
- * Pre-backend versions of the app kept the dictionary in localStorage under
- * this key; it's no longer written but may still hold data on old devices.
- */
-export function downloadOldDictionaryFromLocalStorage(): boolean {
-  const raw = localStorage.getItem(OLD_DICTIONARY_STORAGE_KEY);
-  if (!raw) return false;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    return false;
-  }
-  if (!Array.isArray(parsed) || parsed.length === 0) return false;
-  downloadJson(parsed, 'dictionary-old');
-  return true;
-}
-
 export type ImportedCard = WordCardInput;
 
 function normalizeCard(value: unknown): ImportedCard | null {
