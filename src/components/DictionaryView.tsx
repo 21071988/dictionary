@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   List,
@@ -26,6 +27,7 @@ import { useStrings } from '../i18n/I18nContext';
 
 interface DictionaryViewProps {
   words: WordCard[];
+  loading?: boolean;
   onUpdate: (id: number, input: WordCardInput) => void;
   onDelete: (id: number) => void;
   onNavigate: (view: ViewKey) => void;
@@ -40,6 +42,7 @@ function getLetter(text: string): string {
 
 export function DictionaryView({
   words,
+  loading = false,
   onUpdate,
   onDelete,
   onNavigate,
@@ -113,6 +116,17 @@ export function DictionaryView({
       </Stack>
     </Box>
   );
+
+  if (loading && words.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {toolbar}
+        <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+          <CircularProgress />
+        </Stack>
+      </Box>
+    );
+  }
 
   if (words.length === 0) {
     return (

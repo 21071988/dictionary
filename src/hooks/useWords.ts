@@ -34,21 +34,27 @@ function toBody(input: WordCardInput) {
 export function useWords() {
   const { user, authFetch } = useAuth();
   const [words, setWords] = useState<WordCard[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const wordsRef = useRef(words);
   wordsRef.current = words;
 
   useEffect(() => {
     if (!user) {
       setWords([]);
+      setIsLoading(false);
       return;
     }
     let cancelled = false;
+    setIsLoading(true);
     authFetch<WordCardDto[]>('/api/words/')
       .then((data) => {
         if (!cancelled) setWords(data.map(fromDto));
       })
       .catch(() => {
         if (!cancelled) setWords([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
       });
     return () => {
       cancelled = true;
@@ -135,5 +141,5 @@ export function useWords() {
     [authFetch],
   );
 
-  return { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount };
+  return { words, isLoading, addWord, updateWord, deleteWord, importWords, incrementKnownCount };
 }

@@ -60,7 +60,8 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDesktop = useMediaQuery('(min-width:900px)');
   const { user, logout } = useAuth();
-  const { words, addWord, updateWord, deleteWord, importWords, incrementKnownCount } = useWords();
+  const { words, isLoading: wordsLoading, addWord, updateWord, deleteWord, importWords, incrementKnownCount } =
+    useWords();
   const { recordAnswer } = useProgress();
   const { listIncomingRequests } = useFriends();
   const [requestNoticeOpen, setRequestNoticeOpen] = useState(false);
@@ -130,6 +131,7 @@ export default function App() {
         element={
           <DictionaryView
             words={words}
+            loading={wordsLoading}
             onUpdate={updateWord}
             onDelete={deleteWord}
             onNavigate={navigateTo}
@@ -158,6 +160,7 @@ export default function App() {
         element={
           <DictionaryView
             words={words.filter((w) => !w.translation.trim())}
+            loading={wordsLoading}
             onUpdate={updateWord}
             onDelete={deleteWord}
             onNavigate={navigateTo}
@@ -205,7 +208,7 @@ export default function App() {
       </List>
       <Box sx={{ mt: 'auto' }}>
         <Divider />
-        <StatsBar words={words} />
+        <StatsBar words={words} loading={wordsLoading} />
         <Divider />
         <ListItemButton onClick={logout} sx={{ px: 2 }}>
           <ListItemIcon sx={{ minWidth: 40 }}>
@@ -307,7 +310,7 @@ export default function App() {
 
         {!isDesktop && (
           <Paper elevation={3} sx={{ flexShrink: 0 }}>
-            <StatsBar words={words} sx={{ py: 0.5 }} />
+            <StatsBar words={words} loading={wordsLoading} sx={{ py: 0.5 }} />
             <Divider />
             <BottomNavigation
               showLabels
