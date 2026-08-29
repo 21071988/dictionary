@@ -16,8 +16,6 @@ export function downloadWordsAsJson(words: WordCard[]): void {
   downloadJson(words, 'dictionary');
 }
 
-const OLD_DICTIONARY_STORAGE_KEY = 'dict-app:words';
-
 export type ImportedCard = WordCardInput;
 
 function normalizeCard(value: unknown): ImportedCard | null {

@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { Alert, Box, Button, Paper, Snackbar, Stack, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import HistoryIcon from '@mui/icons-material/History';
 import type { WordCard } from '../types';
 import {
   downloadWordsAsJson,
