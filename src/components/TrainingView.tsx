@@ -165,7 +165,7 @@ export function TrainingView({
 
   if (stage === 'setup') {
     return (
-      <Box sx={{ p: 2, maxWidth: 420, mx: 'auto' }}>
+      <Box sx={{ p: 2, maxWidth: 420, mx: 'auto', height: '100%', overflowY: 'auto', boxSizing: 'border-box' }}>
         <Typography variant="h6" gutterBottom>
           {strings.training.setupTitle}
         </Typography>
