@@ -7,6 +7,7 @@ import {
   Typography,
   Slider,
   Paper,
+  ButtonBase,
   FormControlLabel,
   Switch,
 } from '@mui/material';
@@ -14,12 +15,14 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ReplayIcon from '@mui/icons-material/Replay';
 import SchoolIcon from '@mui/icons-material/School';
+import CasinoIcon from '@mui/icons-material/Casino';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { PrimaryField, WordCard } from '../types';
 import { useProfile } from '../profile/ProfileContext';
 import { Flashcard } from './Flashcard';
 import { useStrings } from '../i18n/I18nContext';
+import { groupWordsByDate, localDateKey, monthCells } from '../trainingCalendar';
 
 interface TrainingViewProps {
   words: WordCard[];
@@ -53,6 +56,11 @@ export function TrainingView({
   const [stage, setStage] = useState<Stage>('setup');
   const [count, setCount] = useState(Math.min(10, words.length || 1));
   const [showAllCards, setShowAllCards] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [session, setSession] = useState<WordCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -62,14 +70,21 @@ export function TrainingView({
   const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const currentCard = session[index];
+  const wordsByDate = useMemo(() => groupWordsByDate(words), [words]);
+  const calendarDays = useMemo(() => monthCells(calendarMonth), [calendarMonth]);
+  const weekdays = useMemo(
+    () => Array.from({ length: 7 }, (_, day) => new Date(2024, 0, day + 1).toLocaleDateString(profile.appLanguage, { weekday: 'narrow' })),
+    [profile.appLanguage],
+  );
+  const selectedWords = selectedDate ? wordsByDate.get(selectedDate) ?? [] : [];
 
   const visibleIndices = session
     .map((_, i) => i)
     .filter((i) => showAllCards || !answers[i]);
   const visiblePos = visibleIndices.indexOf(index);
 
-  const startSession = () => {
-    const picked = weightedShuffle(words, profile.knownThreshold).slice(0, count);
+  const startSession = (availableWords: WordCard[] = words) => {
+    const picked = weightedShuffle(availableWords, profile.knownThreshold).slice(0, count);
     setSession(picked);
     setIndex(0);
     setFlipped(false);
@@ -172,12 +187,105 @@ export function TrainingView({
               onChange={(_, v) => setCount(v as number)}
             />
           </Stack>
+          <Typography sx={{ mt: 3, mb: 1, fontWeight: 600 }}>
+            {strings.training.calendarTitle}
+          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <IconButton
+              size="small"
+              aria-label={strings.training.previousMonth}
+              onClick={() => {
+                setSelectedDate(null);
+                setCalendarMonth((month) => new Date(month.getFullYear(), month.getMonth() - 1, 1));
+              }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            <Typography sx={{ textTransform: 'capitalize' }}>
+              {calendarMonth.toLocaleDateString(profile.appLanguage, { month: 'long', year: 'numeric' })}
+            </Typography>
+            <IconButton
+              size="small"
+              aria-label={strings.training.nextMonth}
+              onClick={() => {
+                setSelectedDate(null);
+                setCalendarMonth((month) => new Date(month.getFullYear(), month.getMonth() + 1, 1));
+              }}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Stack>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center' }}>
+            {weekdays.map((weekday, day) => (
+              <Typography key={day} variant="caption" color="text.secondary" sx={{ py: 0.5 }}>
+                {weekday}
+              </Typography>
+            ))}
+            {calendarDays.map((day, cell) => {
+              if (day === null) return <Box key={`empty-${cell}`} sx={{ height: 44 }} />;
+              const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+              const dateKey = localDateKey(date.getTime());
+              const addedCount = wordsByDate.get(dateKey)?.length ?? 0;
+              const selected = selectedDate === dateKey;
+              return (
+                <Box key={dateKey} sx={{ height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ButtonBase
+                    disabled={addedCount === 0}
+                    aria-label={`${date.toLocaleDateString(profile.appLanguage)}: ${addedCount}`}
+                    onClick={() => setSelectedDate((current) => current === dateKey ? null : dateKey)}
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: '50%',
+                      border: addedCount ? '1.5px solid' : 'none',
+                      borderColor: 'primary.main',
+                      bgcolor: selected ? 'primary.main' : 'transparent',
+                      color: selected ? 'primary.contrastText' : 'text.primary',
+                      overflow: 'visible',
+                    }}
+                  >
+                    {day}
+                    {addedCount > 0 && (
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        sx={{
+                          position: 'absolute',
+                          top: -4,
+                          right: -9,
+                          minWidth: 14,
+                          px: 0.25,
+                          borderRadius: 1,
+                          lineHeight: 1,
+                          color: 'primary.main',
+                          fontSize: '0.65rem',
+                        }}
+                      >
+                        {addedCount}
+                      </Typography>
+                    )}
+                  </ButtonBase>
+                </Box>
+              );
+            })}
+          </Box>
+          <Button
+            fullWidth
+            variant="outlined"
+            size="large"
+            disabled={selectedWords.length === 0}
+            sx={{ mt: 2 }}
+            onClick={() => startSession(selectedWords)}
+          >
+            {strings.training.startSelectedDate}
+          </Button>
           <Button
             fullWidth
             variant="contained"
             size="large"
+            startIcon={<CasinoIcon />}
             sx={{ mt: 3 }}
-            onClick={startSession}
+            onClick={() => startSession()}
           >
             {strings.training.start}
           </Button>
