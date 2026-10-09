@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { Stack, TextField, Button } from '@mui/material';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Autocomplete, Button, Stack, TextField } from '@mui/material';
 import type { WordCard, WordCardInput } from '../types';
 import { useStrings } from '../i18n/I18nContext';
+import { getDictionariesForLanguage } from '../dictionaries';
+import { findWordSuggestions } from '../dictionaries/suggestions';
+import { useProfile } from '../profile/ProfileContext';
 
 interface WordFormProps {
   initial?: WordCard | null;
@@ -12,10 +15,19 @@ interface WordFormProps {
 
 export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: WordFormProps) {
   const strings = useStrings();
+  const { profile } = useProfile();
   const [word, setWord] = useState(initial?.word ?? '');
   const [translation, setTranslation] = useState(initial?.translation ?? '');
   const [transcription, setTranscription] = useState(initial?.transcription ?? '');
   const wordInputRef = useRef<HTMLInputElement | null>(null);
+  const dictionaryWords = useMemo(
+    () => getDictionariesForLanguage(profile.learningLanguage).flatMap((source) => source.words),
+    [profile.learningLanguage],
+  );
+  const suggestions = useMemo(
+    () => findWordSuggestions(dictionaryWords, word),
+    [dictionaryWords, word],
+  );
 
   useEffect(() => {
     setWord(initial?.word ?? '');
@@ -39,14 +51,35 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
 
   return (
     <Stack component="form" onSubmit={handleSubmit} spacing={2}>
-      <TextField
-        label={strings.form.word}
-        value={word}
-        onChange={(e) => setWord(e.target.value)}
-        autoFocus={autoFocusWord}
-        inputRef={wordInputRef}
-        fullWidth
-        required
+      <Autocomplete
+        freeSolo
+        autoHighlight
+        options={suggestions}
+        inputValue={word}
+        filterOptions={(options) => options}
+        getOptionLabel={(option) => typeof option === 'string' ? option : option.word}
+        onInputChange={(_, value) => setWord(value)}
+        onChange={(_, option) => {
+          if (!option || typeof option === 'string') return;
+          setWord(option.word);
+          setTranslation(option.translation);
+          setTranscription(option.transcription ?? '');
+        }}
+        renderOption={(props, option) => (
+          <li {...props} key={option.word}>
+            {option.word} — {option.translation}
+          </li>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={strings.form.word}
+            autoFocus={autoFocusWord}
+            inputRef={wordInputRef}
+            fullWidth
+            required
+          />
+        )}
       />
       <TextField
         label={strings.form.translation}
