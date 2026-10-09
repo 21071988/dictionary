@@ -18,6 +18,12 @@ export function groupWordsByDate(words: WordCard[]): Map<string, WordCard[]> {
   return grouped;
 }
 
+export function toggleSelectedDate(selectedDates: Set<string>, date: string): Set<string> {
+  const next = new Set(selectedDates);
+  if (!next.delete(date)) next.add(date);
+  return next;
+}
+
 export function monthCells(month: Date): Array<number | null> {
   const year = month.getFullYear();
   const monthIndex = month.getMonth();

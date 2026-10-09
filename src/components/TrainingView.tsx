@@ -22,7 +22,7 @@ import type { PrimaryField, WordCard } from '../types';
 import { useProfile } from '../profile/ProfileContext';
 import { Flashcard } from './Flashcard';
 import { useStrings } from '../i18n/I18nContext';
-import { groupWordsByDate, localDateKey, monthCells } from '../trainingCalendar';
+import { groupWordsByDate, localDateKey, monthCells, toggleSelectedDate } from '../trainingCalendar';
 
 interface TrainingViewProps {
   words: WordCard[];
@@ -60,7 +60,7 @@ export function TrainingView({
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDates, setSelectedDates] = useState<Set<string>>(() => new Set());
   const [session, setSession] = useState<WordCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -76,7 +76,7 @@ export function TrainingView({
     () => Array.from({ length: 7 }, (_, day) => new Date(2024, 0, day + 1).toLocaleDateString(profile.appLanguage, { weekday: 'narrow' })),
     [profile.appLanguage],
   );
-  const selectedWords = selectedDate ? wordsByDate.get(selectedDate) ?? [] : [];
+  const selectedWords = [...selectedDates].flatMap((date) => wordsByDate.get(date) ?? []);
 
   const visibleIndices = session
     .map((_, i) => i)
@@ -195,7 +195,7 @@ export function TrainingView({
               size="small"
               aria-label={strings.training.previousMonth}
               onClick={() => {
-                setSelectedDate(null);
+                setSelectedDates(new Set());
                 setCalendarMonth((month) => new Date(month.getFullYear(), month.getMonth() - 1, 1));
               }}
             >
@@ -208,7 +208,7 @@ export function TrainingView({
               size="small"
               aria-label={strings.training.nextMonth}
               onClick={() => {
-                setSelectedDate(null);
+                setSelectedDates(new Set());
                 setCalendarMonth((month) => new Date(month.getFullYear(), month.getMonth() + 1, 1));
               }}
             >
@@ -226,13 +226,14 @@ export function TrainingView({
               const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
               const dateKey = localDateKey(date.getTime());
               const addedCount = wordsByDate.get(dateKey)?.length ?? 0;
-              const selected = selectedDate === dateKey;
+              const selected = selectedDates.has(dateKey);
               return (
                 <Box key={dateKey} sx={{ height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <ButtonBase
                     disabled={addedCount === 0}
                     aria-label={`${date.toLocaleDateString(profile.appLanguage)}: ${addedCount}`}
-                    onClick={() => setSelectedDate((current) => current === dateKey ? null : dateKey)}
+                    aria-pressed={selected}
+                    onClick={() => setSelectedDates((current) => toggleSelectedDate(current, dateKey))}
                     sx={{
                       width: 34,
                       height: 34,
