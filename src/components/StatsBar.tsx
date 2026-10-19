@@ -24,18 +24,13 @@ export function StatsBar({ words, loading = false, sx }: StatsBarProps) {
       alignItems="center"
       sx={{ py: 1, pl: 3, pr: 1, minHeight: 40, ...sx }}
     >
-      {loading ? (
-        <CircularProgress size={16} thickness={5} />
-      ) : (
-        <>
-          <Typography variant="body2" color="text.secondary">
-            {total} {strings.stats.totalWords}
-          </Typography>
-          <Typography variant="body2" color="success.main">
-            {known} {strings.stats.knownWords}
-          </Typography>
-        </>
-      )}
+      <Typography variant="body2" color="text.secondary">
+        {total} {strings.stats.totalWords}
+      </Typography>
+      <Typography variant="body2" color="success.main">
+        {known} {strings.stats.knownWords}
+      </Typography>
+      {loading && <CircularProgress size={16} thickness={5} />}
     </Stack>
   );
 }

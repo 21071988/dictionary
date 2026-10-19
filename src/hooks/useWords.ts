@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { planImportMerge, type ImportedCard } from '../importExport';
 import type { WordCard, WordCardInput } from '../types';
+import { loadWords, mergeFetchedWords, saveWords } from '../wordCache';
 
 interface WordCardDto {
   id: number;
@@ -33,25 +34,35 @@ function toBody(input: WordCardInput) {
 
 export function useWords() {
   const { user, authFetch } = useAuth();
-  const [words, setWords] = useState<WordCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const userId = user?.id ?? null;
+  const [cacheUserId, setCacheUserId] = useState(userId);
+  const [words, setWords] = useState<WordCard[]>(() => userId === null ? [] : loadWords(userId));
+  const [isLoading, setIsLoading] = useState(userId !== null);
+  if (cacheUserId !== userId) {
+    setCacheUserId(userId);
+    setWords(userId === null ? [] : loadWords(userId));
+    setIsLoading(userId !== null);
+  }
   const wordsRef = useRef(words);
   wordsRef.current = words;
 
   useEffect(() => {
-    if (!user) {
-      setWords([]);
-      setIsLoading(false);
-      return;
-    }
+    if (userId !== null && cacheUserId === userId) saveWords(userId, words);
+  }, [userId, cacheUserId, words]);
+
+  useEffect(() => {
+    if (userId === null) return;
     let cancelled = false;
+    const beforeRequest = wordsRef.current;
     setIsLoading(true);
     authFetch<WordCardDto[]>('/api/words/')
       .then((data) => {
-        if (!cancelled) setWords(data.map(fromDto));
+        if (!cancelled) {
+          setWords((current) => mergeFetchedWords(current, data.map(fromDto), beforeRequest));
+        }
       })
       .catch(() => {
-        if (!cancelled) setWords([]);
+        // Cached words remain available when the background request fails.
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
@@ -59,7 +70,7 @@ export function useWords() {
     return () => {
       cancelled = true;
     };
-  }, [user, authFetch]);
+  }, [userId, authFetch]);
 
   const addWord = useCallback(
     async (input: WordCardInput) => {

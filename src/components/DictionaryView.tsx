@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
-  CircularProgress,
   IconButton,
   InputAdornment,
   List,
@@ -117,18 +116,7 @@ export function DictionaryView({
     </Box>
   );
 
-  if (loading && words.length === 0) {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {toolbar}
-        <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
-          <CircularProgress />
-        </Stack>
-      </Box>
-    );
-  }
-
-  if (words.length === 0) {
+  if (words.length === 0 && !loading) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {toolbar}
@@ -212,7 +200,7 @@ export function DictionaryView({
         >
           {grouped.letters.length === 0 ? (
             <Typography color="text.secondary" align="center" sx={{ mt: 4 }}>
-              {strings.dictionary.noResults}
+              {loading && words.length === 0 ? null : strings.dictionary.noResults}
             </Typography>
           ) : (
             <List disablePadding>
