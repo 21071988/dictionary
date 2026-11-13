@@ -70,7 +70,10 @@ export function TrainingView({
   const secondaryField: PrimaryField = primaryField === 'word' ? 'translation' : 'word';
 
   const currentCard = session[index];
-  const wordsByDate = useMemo(() => groupWordsByDate(words), [words]);
+  const wordsByDate = useMemo(
+    () => groupWordsByDate(words, profile.knownThreshold),
+    [words, profile.knownThreshold],
+  );
   const calendarDays = useMemo(() => monthCells(calendarMonth), [calendarMonth]);
   const weekdays = useMemo(
     () => Array.from({ length: 7 }, (_, day) => new Date(2024, 0, day + 1).toLocaleDateString(profile.appLanguage, { weekday: 'narrow' })),
@@ -226,7 +229,7 @@ export function TrainingView({
               const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
               const dateKey = localDateKey(date.getTime());
               const addedCount = wordsByDate.get(dateKey)?.length ?? 0;
-              const selected = selectedDates.has(dateKey);
+              const selected = addedCount > 0 && selectedDates.has(dateKey);
               return (
                 <Box key={dateKey} sx={{ height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <ButtonBase

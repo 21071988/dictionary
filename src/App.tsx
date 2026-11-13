@@ -139,7 +139,7 @@ export default function App() {
           />
         }
       />
-      <Route path="/add" element={<AddCardView onAdd={addWord} />} />
+      <Route path="/add" element={<AddCardView words={words} onAdd={addWord} />} />
       <Route
         path="/training"
         element={

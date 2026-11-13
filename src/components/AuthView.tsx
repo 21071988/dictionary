@@ -169,7 +169,9 @@ export function AuthView() {
   return (
     <Box
       sx={{
-        height: '100%',
+        minHeight: '100%',
+        flexDirection: 'column',
+        gap: 3,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -177,6 +179,19 @@ export function AuthView() {
         overflowY: 'auto',
       }}
     >
+      <Box component="section" lang="en" sx={{ width: '100%', maxWidth: 560, textAlign: 'center' }}>
+        <Typography component="h1" variant="h4" fontWeight={700} gutterBottom>
+          Dictionary — vocabulary flashcards for language learning
+        </Typography>
+        <Typography component="p" color="text.secondary" sx={{ mb: 1 }}>
+          Learn Danish and other languages with your own vocabulary flashcards. Save words and
+          translations, practise your vocabulary and track your daily learning progress.
+        </Typography>
+        <Typography component="p" color="text.secondary">
+          Import and export your word collection, and follow your friends’ progress.
+          Create an account or sign in to start learning.
+        </Typography>
+      </Box>
       <Paper elevation={2} sx={{ width: '100%', maxWidth: 380, p: 4 }}>
         <Stack spacing={1} alignItems="center" sx={{ mb: 3 }}>
           <MenuBookIcon color="primary" fontSize="large" />

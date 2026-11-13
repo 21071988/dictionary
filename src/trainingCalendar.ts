@@ -7,9 +7,10 @@ export function localDateKey(timestamp: number): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
-export function groupWordsByDate(words: WordCard[]): Map<string, WordCard[]> {
+export function groupWordsByDate(words: WordCard[], knownThreshold: number): Map<string, WordCard[]> {
   const grouped = new Map<string, WordCard[]>();
   for (const word of words) {
+    if (word.knownCount >= knownThreshold) continue;
     const key = localDateKey(word.createdAt);
     const dateWords = grouped.get(key);
     if (dateWords) dateWords.push(word);
