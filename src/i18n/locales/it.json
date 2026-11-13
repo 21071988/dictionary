@@ -43,6 +43,7 @@
   },
   "form": {
     "word": "Parola",
+    "wordAlreadyExists": "Questa parola è già nel tuo dizionario. Non occorre aggiungerla di nuovo.",
     "translation": "Traduzione",
     "transcription": "Trascrizione",
     "transcriptionPlaceholder": "facoltativo"

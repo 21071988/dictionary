@@ -43,6 +43,7 @@
   },
   "form": {
     "word": "Palabra",
+    "wordAlreadyExists": "Esta palabra ya está en tu diccionario. No necesitas añadirla de nuevo.",
     "translation": "Traducción",
     "transcription": "Transcripción",
     "transcriptionPlaceholder": "opcional"

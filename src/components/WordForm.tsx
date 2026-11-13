@@ -5,15 +5,17 @@ import { useStrings } from '../i18n/I18nContext';
 import { getDictionariesForLanguage } from '../dictionaries';
 import { findWordSuggestions } from '../dictionaries/suggestions';
 import { useProfile } from '../profile/ProfileContext';
+import { hasDuplicateWord } from '../wordValidation';
 
 interface WordFormProps {
   initial?: WordCard | null;
   submitLabel: string;
   onSubmit: (input: WordCardInput) => void;
   autoFocusWord?: boolean;
+  existingWords?: WordCard[];
 }
 
-export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: WordFormProps) {
+export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord, existingWords = [] }: WordFormProps) {
   const strings = useStrings();
   const { profile } = useProfile();
   const [word, setWord] = useState(initial?.word ?? '');
@@ -35,6 +37,7 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
     setTranscription(initial?.transcription ?? '');
   }, [initial]);
 
+  const isDuplicate = hasDuplicateWord(existingWords, word);
   const canSubmit = word.trim().length > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -78,6 +81,13 @@ export function WordForm({ initial, submitLabel, onSubmit, autoFocusWord }: Word
             inputRef={wordInputRef}
             fullWidth
             required
+            color={isDuplicate ? 'warning' : 'primary'}
+            sx={isDuplicate ? {
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'warning.main' },
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'warning.main' },
+              '& .MuiInputLabel-root, & .MuiFormHelperText-root': { color: 'warning.main' },
+            } : undefined}
+            helperText={isDuplicate ? strings.form.wordAlreadyExists : undefined}
           />
         )}
       />

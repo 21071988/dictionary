@@ -6,6 +6,17 @@ import { loadCardFlipCount, saveCardFlipCount } from '../storage';
 
 const FLIP_HINT_LIMIT = 3;
 
+function getWordStyles(text: string) {
+  const longestWord = Math.max(1, ...text.split(/\s+/).map((word) => Array.from(word).length));
+
+  return {
+    // Leave room for wide letters; wrap words that still exceed the minimum font size.
+    fontSize: `clamp(1rem, calc((100cqw - 48px) / ${longestWord * 0.8}), 2.125rem)`,
+    maxWidth: '100%',
+    overflowWrap: 'anywhere',
+  } as const;
+}
+
 interface FlashcardProps {
   frontText: string;
   backText: string;
@@ -40,7 +51,9 @@ export function Flashcard({
       onClick={handleClick}
       sx={{
         width: '100%',
+        minWidth: 0,
         maxWidth: 380,
+        containerType: 'inline-size',
         height: 280,
         mx: 'auto',
         perspective: 1200,
@@ -75,11 +88,11 @@ export function Flashcard({
             textAlign: 'center',
           }}
         >
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={700} sx={getWordStyles(frontText)}>
             {frontText}
           </Typography>
           {frontTranscription && (
-            <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1 }}>
+            <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1, maxWidth: '100%', overflowWrap: 'anywhere' }}>
               [{frontTranscription}]
             </Typography>
           )}
@@ -110,11 +123,11 @@ export function Flashcard({
             textAlign: 'center',
           }}
         >
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={700} sx={getWordStyles(backText)}>
             {backText}
           </Typography>
           {backTranscription && (
-            <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1 }}>
+            <Typography variant="subtitle1" sx={{ opacity: 0.85, mt: 1, maxWidth: '100%', overflowWrap: 'anywhere' }}>
               [{backTranscription}]
             </Typography>
           )}

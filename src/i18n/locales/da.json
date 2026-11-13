@@ -43,6 +43,7 @@
   },
   "form": {
     "word": "Ord",
+    "wordAlreadyExists": "Dette ord findes allerede i din ordbog. Du behøver ikke tilføje det igen.",
     "translation": "Oversættelse",
     "transcription": "Udtale",
     "transcriptionPlaceholder": "valgfrit"

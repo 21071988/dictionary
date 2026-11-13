@@ -7,12 +7,14 @@ import { AuthProvider } from './auth/AuthContext';
 import { ProfileProvider } from './profile/ProfileContext';
 import { I18nProvider } from './i18n/I18nContext';
 import App from './App';
+import { SearchMetadata } from './components/SearchMetadata';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter basename="/dictionary">
+        <SearchMetadata />
         <AuthProvider>
           <ProfileProvider>
             <I18nProvider>

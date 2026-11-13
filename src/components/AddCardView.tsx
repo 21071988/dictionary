@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Box, Snackbar, Alert, Typography, Paper } from '@mui/material';
-import type { WordCardInput } from '../types';
+import type { WordCard, WordCardInput } from '../types';
 import { WordForm } from './WordForm';
 import { useStrings } from '../i18n/I18nContext';
 
 interface AddCardViewProps {
+  words: WordCard[];
   onAdd: (input: WordCardInput) => void;
 }
 
-export function AddCardView({ onAdd }: AddCardViewProps) {
+export function AddCardView({ words, onAdd }: AddCardViewProps) {
   const strings = useStrings();
   const [snackOpen, setSnackOpen] = useState(false);
 
@@ -19,6 +20,7 @@ export function AddCardView({ onAdd }: AddCardViewProps) {
       </Typography>
       <Paper variant="outlined" sx={{ p: 2.5 }}>
         <WordForm
+          existingWords={words}
           submitLabel={strings.addCard.submit}
           autoFocusWord
           onSubmit={(input) => {
